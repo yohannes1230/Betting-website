@@ -1,0 +1,299 @@
+// AddisBet Demo MVP — Prisma Schema
+// Section 11 of the build guide
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────
+
+enum KycStatus {
+  NONE
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum Membership {
+  STANDARD
+  SILVER
+  GOLD
+  VIP
+}
+
+enum BetStatus {
+  PENDING
+  WON
+  LOST
+  VOID
+  REFUNDED
+}
+
+enum BetType {
+  SINGLE
+  MULTI
+  SYSTEM
+}
+
+enum TxType {
+  DEPOSIT
+  WITHDRAW
+  BET
+  WIN
+}
+
+enum TxStatus {
+  PENDING
+  COMPLETED
+  APPROVED
+  REJECTED
+}
+
+enum MatchStatus {
+  UPCOMING
+  LIVE
+  SETTLED
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  FINANCE
+  SUPPORT
+  RISK
+}
+
+// ─── Models ───────────────────────────────────────────────
+
+model User {
+  id              String     @id @default(cuid())
+  phone           String     @unique
+  passwordHash    String
+  fullName        String
+  dob             DateTime
+  kycStatus       KycStatus  @default(NONE)
+  membershipLevel Membership @default(STANDARD)
+  totalWagered    Decimal    @default(0) @db.Decimal(12, 2)
+  selfExcluded    Boolean    @default(false)
+  depositLimit    Decimal?   @db.Decimal(12, 2)
+  otpCode         String?
+  otpExpiresAt    DateTime?
+  isVerified      Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  wallet Wallet?
+  bets   Bet[]
+
+  @@index([phone])
+}
+
+model Wallet {
+  id           String        @id @default(cuid())
+  userId       String        @unique
+  balance      Decimal       @default(0) @db.Decimal(12, 2)
+  currency     String        @default("ETB-DEMO")
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  walletId  String
+  type      TxType
+  amount    Decimal  @db.Decimal(12, 2)
+  status    TxStatus @default(PENDING)
+  note      String?
+  createdAt DateTime @default(now())
+  wallet    Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([type, status])
+  @@index([createdAt])
+}
+
+model Bet {
+  id           String    @id @default(cuid())
+  userId       String
+  betType      BetType
+  stake        Decimal   @db.Decimal(12, 2)
+  totalOdds    Decimal   @db.Decimal(12, 4)
+  potentialWin Decimal   @db.Decimal(12, 2)
+  status       BetStatus @default(PENDING)
+  createdAt    DateTime  @default(now())
+  settledAt    DateTime?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items        BetItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model BetItem {
+  id         String    @id @default(cuid())
+  betId      String
+  matchId    String
+  marketName String
+  selection  String
+  odds       Decimal   @db.Decimal(8, 4)
+  status     BetStatus @default(PENDING)
+  bet        Bet       @relation(fields: [betId], references: [id], onDelete: Cascade)
+  match      Match     @relation(fields: [matchId], references: [id])
+
+  @@index([betId])
+  @@index([matchId])
+}
+
+model Match {
+  id        String      @id @default(cuid())
+  sport     String      @default("Football")
+  league    String
+  homeTeam  String
+  awayTeam  String
+  startTime DateTime
+  status    MatchStatus @default(UPCOMING)
+  isLive    Boolean     @default(false)
+  minute    Int?
+  homeScore Int?        @default(0)
+  awayScore Int?        @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  odds     Odds[]
+  betItems BetItem[]
+  events   MatchEvent[]
+
+  @@index([league])
+  @@index([status, isLive])
+  @@index([startTime])
+}
+
+model Odds {
+  id         String   @id @default(cuid())
+  matchId    String
+  marketName String
+  selection  String
+  value      Decimal  @db.Decimal(8, 4)
+  suspended  Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+  match      Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, marketName, selection])
+  @@index([matchId])
+}
+
+model MatchEvent {
+  id          String   @id @default(cuid())
+  matchId     String
+  minute      Int
+  type        String   // goal, card, var_check, substitution, chance
+  description String
+  createdAt   DateTime @default(now())
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+  @@index([createdAt])
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(SUPPORT)
+  createdAt    DateTime  @default(now())
+  auditLogs    AuditLog[]
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  adminUserId String
+  action      String
+  targetTable String
+  targetId    String
+  details     String?
+  createdAt   DateTime  @default(now())
+  admin       AdminUser @relation(fields: [adminUserId], references: [id])
+
+  @@index([adminUserId])
+  @@index([createdAt])
+}
+
+// Game-specific models
+
+model KenoDraw {
+  id         String   @id @default(cuid())
+  seed       String
+  numbers    Int[]    // 20 drawn numbers
+  closesAt   DateTime
+  settledAt  DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model KenoTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  drawId    String
+  picks     Int[]    // player's selected numbers
+  stake     Decimal  @db.Decimal(12, 2)
+  matched   Int?
+  payout    Decimal? @db.Decimal(12, 2)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([drawId])
+}
+
+model AviatorRound {
+  id         String   @id @default(cuid())
+  crashPoint Decimal  @db.Decimal(8, 2)
+  startedAt  DateTime @default(now())
+  crashedAt  DateTime?
+  seed       String
+
+  @@index([startedAt])
+}
+
+model AviatorBet {
+  id         String   @id @default(cuid())
+  userId     String
+  roundId    String
+  stake      Decimal  @db.Decimal(12, 2)
+  cashOutAt  Decimal? @db.Decimal(8, 2) // multiplier when cashed out
+  payout     Decimal? @db.Decimal(12, 2)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([roundId])
+}
+
+model VirtualMatch {
+  id        String   @id @default(cuid())
+  homeTeam  String
+  awayTeam  String
+  homeScore Int?
+  awayScore Int?
+  homeOdds  Decimal  @db.Decimal(8, 4)
+  drawOdds  Decimal  @db.Decimal(8, 4)
+  awayOdds  Decimal  @db.Decimal(8, 4)
+  overOdds  Decimal  @db.Decimal(8, 4)
+  underOdds Decimal  @db.Decimal(8, 4)
+  status    String   @default("pending") // pending, playing, settled
+  events    String[] // ticker events
+  startedAt DateTime @default(now())
+  settledAt DateTime?
+
+  @@index([status])
+}
+
+// System config for editable limits (Section 7)
+model SystemConfig {
+  key   String @id
+  value String
+}

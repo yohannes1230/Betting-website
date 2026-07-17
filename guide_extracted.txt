@@ -1,0 +1,748 @@
+AI DEVELOPER BRIEF
+Full Technical Build Prompt
+Betting Platform — Demo MVP
+Copy-paste ready instructions for an AI coding agent (Claude Code or equivalent)
+UI Palette
+Navy #0B1F3A   •   White #FFFFFF   •   Electric Blue #0066FF
+17 July 2026
+  
+How to Use This Document
+Everything inside the dark navy boxes below is one continuous prompt, written to be copy-pasted directly into an AI coding agent (Claude Code or an equivalent agentic coding tool) in a single message. Paste the boxes in order, start to finish, exactly as written — do not paraphrase or summarize them.
+This is a demo/MVP brief only: no real money, no real gambling license integration, and no real user documents are collected anywhere in this build. Every box is self-contained under its own heading so you can also hand a single box to the agent later (e.g. “now rebuild just the Aviator game per the Game Engines box”) if you want to iterate section by section instead of all at once.
+The sections are ordered exactly as the build should happen: accounts → architecture → design → every page → game logic → data → database → API → quality bar → deployment → final delivery checklist. Follow it top to bottom for a first build.
+0  
+Prerequisites — Accounts to Create First (all free)
+Before handing over the prompt, create these free accounts so the AI agent has somewhere to deploy to and (optionally) a real odds key to use. None require a paid plan for this demo.
+ACCOUNTS TO CREATE BEFORE STARTING (all free tier)
+ 
+1. GitHub — github.com — hosts the source code and connects to Vercel
+   for automatic deployment
+2. Vercel — vercel.com — sign up with the GitHub account; this hosts
+   the Next.js frontend + API for free
+3. Supabase — supabase.com — sign up for a free project; gives a
+   free PostgreSQL database, free file storage, and (optionally)
+   free Realtime channels
+4. The Odds API — the-odds-api.com — optional, free tier (~500
+   requests/month); only needed if you want a few real fixtures
+   mixed into the mock data — the app must run fine without it
+ 
+Hand all four (or the first three, if skipping the odds key) to the
+AI agent along with the prompt below, or let it prompt you for the
+resulting keys/URLs when it reaches Section 15 (Environment
+Variables) and Section 18 (Deployment).
+1  
+Role, Context & Guardrails
+ROLE & CONTEXT
+ 
+You are a senior full-stack software engineer with 10+ years of experience
+building licensed online betting/gaming platforms (sportsbook, casino,
+virtual games, payments). You have been hired to build a WORKING DEMO / MVP
+of a betting website for an Ethiopia-focused all-in-one betting platform.
+The founder will use this demo to show functionality to prospective clients
+and investors as a clickable, testable product — before any commercial
+license, real payment integration, or production data contract is signed.
+ 
+HARD RULES (do not break these, ever, in this build):
+• This is a DEMO ONLY. Never wire up a real payment processor, a real
+  gambling-data contract, or a real KYC/document-collection flow.
+• All money in the system is simulated play-money. Every balance, deposit,
+  and withdrawal must be clearly fake and reversible from the admin panel.
+• Never collect, store, or request real government ID numbers, real ID
+  photo uploads, or any other real personally identifying document.
+• Every page must show a persistent, unmissable “DEMO MODE — No Real
+  Money” badge.
+• Do not send real SMS/OTP messages — simulate OTP delivery on-screen.
+ 
+AUTONOMY:
+You have full permission to install any npm/pip packages you judge
+necessary, create or modify any files, choose any free-tier or sandbox
+third-party service, and make reasonable architecture and implementation
+decisions on your own without pausing to ask for confirmation at each
+step. Keep moving and building; just record every non-obvious decision
+in the README’s “Decisions Made” section so it can be reviewed later.
+2  
+Project Goal & Definition of Done
+GOAL OF THIS DEMO
+ 
+Build a fully clickable, realistic-looking, mobile-first betting website
+that a non-technical founder can open on a laptop or phone and confidently
+demo live in front of a client, with zero crashes and zero placeholder
+“Lorem ipsum” text anywhere in the primary user flows.
+ 
+DEFINITION OF DONE — the demo is finished when all of these are true:
+• A visitor can land on the homepage, register with a phone number,
+  verify a (simulated) OTP, and land in a logged-in dashboard in under
+  60 seconds, with zero manual database edits required.
+• The visitor can add demo funds, browse at least 3 football leagues with
+  realistic odds, build a multi-bet slip, place a bet, and see it appear
+  in their bet history as “pending”.
+• At least one match is shown as LIVE with odds that visibly change every
+  few seconds without a page refresh.
+• Keno, the Aviator-style crash game, and virtual football are all fully
+  playable end-to-end with a simulated outcome and updated balance.
+• An admin can log into /admin, see live-looking KPIs, approve a pending
+  withdrawal, and override the odds on one sample match.
+• The whole app is usable (not broken, not unreadably slow) on a
+  throttled “Slow 3G” mobile profile.
+• The app is deployed to a public URL on a $0/month hosting tier that the
+  founder can send to a client right now.
+3  
+Technology Stack
+TECH STACK — use exactly this unless a package is genuinely unavailable,
+in which case substitute the closest free equivalent and record it in the
+README.
+ 
+Frontend
+• Next.js 14+ (App Router), TypeScript, Tailwind CSS
+• Component layer: React Server Components where possible, Client
+  Components for anything interactive (bet slip, live odds, games)
+• State: Zustand for the bet-slip and wallet client state
+• Forms/validation: react-hook-form + zod
+• Icons: lucide-react
+• Animation: Framer Motion for odds-change flashes, crash-game curve,
+  and page-transition polish
+ 
+Backend
+• Next.js Route Handlers (app/api/**) for all REST endpoints
+• Prisma ORM against PostgreSQL
+• Zod schemas shared between client and server for validation
+• Socket.IO server (custom Next.js server) OR Supabase Realtime channels
+  for live odds / live game state — pick one and use it consistently
+ 
+Auth
+• NextAuth.js, Credentials provider keyed on phone number + password
+• A custom “verify OTP” step between registration and session creation;
+  OTP code is generated server-side, written to the server console/log,
+  AND shown directly on the OTP screen in a visible “DEMO OTP: 123456”
+  banner — never actually dispatched via a real SMS provider
+ 
+Database & Hosting (all free tiers)
+• PostgreSQL via Supabase (free tier) — also gives you free Auth/Realtime
+  if you prefer that over NextAuth/Socket.IO; your call, stay consistent
+• Frontend + API hosted on Vercel (free Hobby tier)
+• Object storage for any demo image uploads: Supabase Storage free tier
+ 
+Tooling
+• ESLint + Prettier, strict TypeScript ("strict": true)
+• Git with Conventional Commits (feat:, fix:, chore:, etc.)
+• A .env.example file listing every environment variable with a comment
+  explaining what it’s for and where to get a free value
+4  
+Repository Structure
+REPOSITORY / FOLDER STRUCTURE — scaffold exactly this shape (add files
+inside these folders as needed, but keep this top-level shape):
+ 
+/app
+  /(public)/                 landing, sportsbook, match detail, games
+  /(auth)/login /register /verify-otp
+  /(account)/wallet /profile /bet-history
+  /admin/                    admin dashboard route group (guarded)
+  /api/
+    /auth/[...nextauth]
+    /matches  /odds  /bets  /wallet  /admin/*
+/components
+  /ui/                       shared buttons, cards, badges, inputs
+  /betslip/  /sportsbook/  /games/  /admin/  /wallet/
+/lib
+  /prisma.ts  /auth.ts  /socket.ts  /odds-engine.ts  /game-engines/
+  /i18n/  /validation/ (zod schemas)
+/prisma
+  /schema.prisma  /seed.ts
+/public
+  /locales/en.json  /locales/am.json
+README.md
+.env.example
+5  
+Brand & UI Design System
+Reference palette — wire these into a Tailwind theme / CSS variables and use them consistently everywhere; never introduce an ad-hoc color outside this table:
+Role
+Hex
+Used for
+Navy
+#0B1F3A
+Primary background, header, footer, nav bar, hero section
+White
+#FFFFFF
+Content surfaces, cards, text printed on navy
+Electric Blue
+#0066FF
+Primary CTA buttons, odds pills, active tab, live badges, links
+Electric Blue (hover/glow)
+#2E8BFF
+Hover/focus state, glow shadow on primary buttons
+Light Blue tint
+#EAF1FF
+Selected/hover background on odds buttons and cards
+Light Grey
+#F4F6F9
+Card background on white sections, table zebra striping
+Dark Grey (text)
+#1F2937
+Body text on white backgrounds
+Muted Grey
+#6B7280
+Secondary/help text, timestamps
+Win Green
+#16C784
+Win amounts, positive balance changes, success states ONLY
+Live/Loss Red
+#E11D2E
+“LIVE” badge, loss amounts, error states ONLY
+DESIGN SYSTEM DETAILS
+ 
+Typography
+• Font: Inter (fallback: system-ui). Headings bold/extrabold, body regular.
+• Odds and money values ALWAYS use tabular-nums so digits don’t jitter
+  horizontally when live values update.
+ 
+Layout & spacing
+• Tailwind default spacing scale; base radius rounded-xl (12px) on cards,
+  rounded-full on pills/badges/odds buttons
+• Breakpoints: mobile-first, primary target 360–430px width; desktop
+  breakpoint at 1024px introduces the persistent right-hand bet slip
+• Max content width 1280px on desktop, centered
+ 
+Core components to build once, reuse everywhere
+• <OddsButton /> — white/navy text on light-blue bg, turns electric-blue
+  filled with white text when selected; flashes green briefly on an
+  increase, red briefly on a decrease, then settles back
+• <Button variant="primary" /> — electric-blue fill, white text, glow
+  shadow (#2E8BFF at 40% opacity) on hover
+• <Card /> — white bg, subtle shadow, rounded-xl, light-grey bg variant
+  for nested content
+• <LiveBadge /> — small red pill with a pulsing dot + “LIVE” label
+• <DemoBadge /> — persistent small badge, navy bg / electric-blue text,
+  reading “DEMO MODE — No Real Money”, present in the header on every
+  page and in the footer on marketing pages
+• <SkeletonRow /> — shimmer placeholder, used instead of any blank/flash
+  while odds or balances are loading
+ 
+Motion
+• Odds value change: 400ms background flash (green up / red down) then
+  fade back to resting state
+• Page/section entry: 150–200ms fade+slight-slide, never longer
+• Crash-game curve: smooth 60fps canvas or SVG path animation, no jank
+6  
+Page-by-Page Specification
+PAGES / SCREENS — build every one of these, with every listed state
+ 
+1. Landing page (/)
+• Navy hero with headline, subhead, primary CTA (“Register & get demo
+  funds”) and a secondary “Browse odds” ghost button
+• Horizontal top-leagues carousel (logos + a live match count chip)
+• Promo banner strip (e.g. welcome bonus — clearly labeled demo)
+• “Why this platform” 3-4 feature cards (fast payouts, live betting,
+  Keno/Aviator, VIP) reusing the icon + card component
+• Footer: links, responsible-gambling note, language switcher, and the
+  DemoBadge
+ 
+2. Sportsbook (/sports, /sports/[league])
+• Tabs: Pre-match / Live Now; league sidebar or horizontal chips
+• Match row: teams, kickoff time or live minute+score, 3 quick-market
+  odds buttons (1X2) inline, “+N markets” link to full match page
+• Empty state (“No live matches right now”) and loading skeleton state
+ 
+3. Match detail (/sports/match/[id])
+• Full market list grouped by category (Match Result, Goals,
+  Handicap, Both Teams to Score, Correct Score, etc.)
+• Live tab shows a simple event timeline (goals, cards, VAR check) that
+  updates via the realtime channel and can visibly suspend a market
+  during a “key moment” for a few seconds (mirrors real bet-delay UX)
+ 
+4. Bet slip (persistent component, not a route)
+• Right-hand panel ≥1024px; bottom sheet, swipe-up, on mobile
+• Tabs: Single / Multi / System; per-selection stake input on Single,
+  one combined stake input on Multi
+• Live potential-return calculation; inline warning + auto-block on
+  same-match correlated selections (see Section 7)
+• “Odds have changed” confirmation modal simulated on ~10% of
+  placements to demonstrate the real production behavior
+• Success state: animated checkmark, ticket ID, “View in Bet History”
+  link
+ 
+5. Keno (/games/keno)
+• 10x8 (or similar) number grid, pick up to 10, stake input, payout-
+  odds table, big countdown ring to next draw (60–90s), animated
+  ball draw, result highlight + win/lose banner
+ 
+6. Aviator-style crash game (/games/aviator)
+• Full-bleed canvas/SVG multiplier curve climbing from 1.00x, round
+  timer, big Cash Out button (disabled once the plane “crashes”),
+  live multiplier readout, round-history chips strip, chat-style
+  “other players cashed out at…” feed (can be simulated fake users)
+ 
+7. Virtual football (/games/virtual-football)
+• Pre-match odds (1X2, O/U) on a short fictional fixture, a 60–90
+  second simulated match with a simple animated scoreboard/ticker,
+  then a settled result and payout
+ 
+8. Casino / virtual-games hub (/games)
+• Responsive grid of game cards; Keno/Aviator/virtual-football cards
+  are playable; remaining cards show a “Coming Soon” ribbon
+ 
+9. Auth (/register, /login, /verify-otp)
+• Register: phone (+251 prefix locked), password, confirm password,
+  date of birth, “I confirm I am 18+” + T&Cs checkboxes
+• Verify-OTP: 6-digit input, visible “Demo OTP: 123456” helper banner,
+  resend-code (demo) button with a cooldown timer
+ 
+10. Wallet (/wallet)
+• Current demo balance (large, tabular-nums), “Add demo funds” button
+  (instant, choose from preset amounts), “Request withdrawal” form
+  that creates a pending record only, transaction history table
+  with type/amount/status/date and status-colored pills
+ 
+11. Profile (/profile)
+• Editable display name/avatar, VIP tier badge with a progress bar to
+  the next tier, bet history (open + settled, filterable), self-
+  exclusion toggle, deposit-limit input (both UI-only for the demo)
+ 
+12. Admin dashboard (/admin/*, separate guarded layout)
+• /admin — KPI cards (today’s signups, total stakes, total payouts,
+  net demo “revenue”, online-now count) + a simple line chart
+• /admin/withdrawals — pending list with Approve/Reject actions
+• /admin/odds — pick a match, manually override one market’s odds
+• /admin/users — searchable table with role/status and a suspend
+  toggle
+7  
+Bet Slip Business Logic
+BET SLIP BUSINESS LOGIC — implement precisely, both client- and
+server-side (never trust the client-side number alone):
+ 
+Odds multiplication (Multi/Accumulator)
+total_odds = odds_1 * odds_2 * ... * odds_n
+potential_return = stake * total_odds
+Example: 1.50 * 1.80 * 2.00 = 5.40 total odds; a 100 ETB (demo) stake
+returns 540 (demo) on a full win.
+ 
+Correlated-market rule
+A user may never combine two selections from the SAME match inside one
+multi-bet. Detect this the instant a second selection from an already-
+used match_id is added: show an inline red warning on the new
+selection, keep the older one, and disable the “Place Bet” button
+until it is resolved.
+ 
+Limits (all editable from /admin, never hardcoded)
+• Minimum stake: 10 (demo units); Maximum stake: 10,000 (demo units)
+• Multi-bet: minimum 2 legs, maximum 20 legs
+• Maximum payout per ticket: 500,000 (demo units) — cap silently
+  applied server-side even if the multiplied odds imply more
+ 
+Odds-integrity check on placement
+On “Place Bet”, the server re-reads the current odds for every
+selection and compares them to what the client submitted. If any
+differ, reject the placement, return the new odds, and have the
+client show the “Odds have changed — accept new odds?” modal rather
+than silently placing at a different price.
+ 
+Bet lifecycle
+pending -> won | lost | void | refunded, always written through a
+single settlement function so history stays consistent; settling a
+bet must atomically update the user’s wallet balance and write a
+Transaction row in the same database transaction.
+8  
+Live Odds & Real-Time Architecture
+REAL-TIME ARCHITECTURE
+ 
+Use a single realtime channel strategy across the app (Socket.IO OR
+Supabase Realtime — pick one, do not mix). Define and use these
+logical event/channel names consistently:
+ 
+odds:update        { matchId, marketName, selection, value }
+match:live-event   { matchId, minute, type, description }
+match:status       { matchId, status, isLive }
+keno:draw-start    { drawId, closesAt }
+keno:draw-result   { drawId, numbers }
+aviator:round-start{ roundId, startedAt }
+aviator:multiplier { roundId, value }
+aviator:crash      { roundId, crashAt }
+wallet:balance     { userId, balance }
+ 
+If a true WebSocket server is impractical on the chosen free host,
+simulate the same effect with 3–5 second client-side polling against
+a lightweight GET endpoint — the visible behavior (numbers updating
+without a page refresh) must be indistinguishable to the user either
+way.
+ 
+A background job (can be a simple setInterval-driven service or a
+scheduled serverless function) must continuously nudge pre-match odds
+by small random deltas and drive the live match clock/events so the
+demo feels alive even with nobody else connected.
+9  
+Game Engine Specifications
+CUSTOM GAME ENGINES — self-built, RNG-based, clearly documented
+ 
+Keno
+• Draw 20 numbers from a 1–80 pool using a seeded RNG every 60–90
+  seconds; store the seed and drawn numbers on the Draw record
+• Player picks up to 10 numbers before the countdown hits zero; payout
+  multiplier is looked up from a fixed pay table keyed by
+  (numbers picked, numbers matched) — hardcode a standard Keno pay
+  table as a constant
+ 
+Aviator-style crash game
+• Each round, pre-generate a crash point using something like:
+    crashPoint = max(1.00, (0.99 / (1 - random())) rounded to 2dp)
+  with a house-edge constant folded in (document the exact formula
+  and constant you land on in the README) — store it server-side and
+  never expose it to the client before the round ends
+• Client renders a multiplier that climbs from 1.00x based on elapsed
+  time (e.g. exponential curve), driven by server ticks so it can
+  never be raced by client manipulation
+• “Cash Out” locks in whatever multiplier the server confirms at the
+  moment the request is received, server-side, before the crash tick
+ 
+Virtual football
+• Pick two fictional team names per fixture, generate a plausible
+  final score with a weighted random goal model (e.g. Poisson-ish
+  weighting so 1–2 goals per side is most common), and pre-compute
+  1X2 / Over-Under odds from the same model so pricing looks
+  internally consistent
+• Animate a simple event ticker (kickoff, a couple of goal/chance
+  events at random timestamps, full-time) across a fixed 60–90
+  second real-time window
+10  
+Data & Odds Provider Strategy
+DATA / PROVIDERS — free or self-built ONLY for this demo
+ 
+• Primary source: a self-built mock-data generator/seed script that
+  creates realistic leagues, fixtures, teams, and odds so the app
+  runs fully offline and never breaks on a third party’s rate limit
+• Optional enrichment: a free-tier public odds API (e.g. The Odds API
+  free tier, ~500 requests/month) for a handful of real upcoming
+  fixtures. Cache responses aggressively (e.g. 5–10 minutes) and
+  fail over to mock data automatically if the key is missing or the
+  quota is exhausted — the app must never show an error state to
+  the visitor because of this
+• No genuine free production-grade casino/virtual-games provider
+  exists. Real providers (Digitain, BetConstruct, Altenar,
+  SoftGamings, NuxGame, EveryMatrix, Golden Race, Inbet) all require
+  a signed commercial/licensing agreement and are NOT usable in a
+  public demo — this is why Section 9’s custom game engines exist
+ 
+Document in the README, in a simple table, exactly which pieces of
+data are “real free-tier data” vs. “self-generated demo data” so the
+founder can accurately describe the demo to a client.
+ 
+For the README’s production roadmap section only (do not build now):
+Digitain / BetConstruct / Altenar / SoftGamings / NuxGame as future
+real sportsbook+casino aggregator candidates, and Telebirr / CBE Birr
+B2C APIs as future real payment rails — both require a signed
+commercial agreement and the NLA betting license before they can be
+connected for real.
+11  
+Database Schema (Prisma)
+DATABASE SCHEMA — implement at minimum exactly these models and
+fields (add indexes/relations as Prisma requires):
+ 
+model User {
+  id               String   @id @default(cuid())
+  phone            String   @unique
+  passwordHash     String
+  fullName         String
+  dob              DateTime
+  kycStatus        KycStatus  @default(NONE)
+  membershipLevel  Membership @default(STANDARD)
+  totalWagered     Decimal    @default(0)
+  selfExcluded     Boolean    @default(false)
+  depositLimit     Decimal?
+  createdAt        DateTime   @default(now())
+}
+ 
+model Wallet { id, userId (unique), balance Decimal @default(0),
+               currency String @default("ETB-DEMO") }
+ 
+model Transaction { id, walletId, type (DEPOSIT|WITHDRAW|BET|WIN),
+                    amount Decimal, status, createdAt }
+ 
+model Bet { id, userId, betType (SINGLE|MULTI|SYSTEM), stake Decimal,
+            totalOdds Decimal, potentialWin Decimal,
+            status (PENDING|WON|LOST|VOID|REFUNDED), createdAt }
+ 
+model BetItem { id, betId, matchId, marketName, selection, odds
+                Decimal, status }
+ 
+model Match { id, sport, league, homeTeam, awayTeam, startTime,
+              status, isLive Boolean @default(false) }
+ 
+model Odds { id, matchId, marketName, selection, value Decimal,
+             updatedAt @updatedAt }
+ 
+model AdminUser { id, email @unique, passwordHash,
+                  role (SUPER_ADMIN|FINANCE|SUPPORT|RISK) }
+ 
+model AuditLog { id, adminUserId, action, targetTable, targetId,
+                 createdAt }
+ 
+Use Prisma enums for KycStatus, Membership, and all status fields
+above rather than free-text strings.
+12  
+API Endpoints
+API ENDPOINTS — implement at minimum (REST, JSON, all under /api)
+ 
+POST  /api/auth/register
+POST  /api/auth/verify-otp
+POST  /api/auth/login            (NextAuth credentials callback)
+GET   /api/matches?league=&live=
+GET   /api/matches/:id
+GET   /api/odds/:matchId
+POST  /api/bets                  create bet (re-validates odds!)
+GET   /api/bets?status=&userId=
+POST  /api/wallet/demo-deposit
+POST  /api/wallet/withdraw-request
+GET   /api/wallet/transactions
+POST  /api/games/keno/pick
+GET   /api/games/keno/current-draw
+POST  /api/games/aviator/cash-out
+GET   /api/games/aviator/current-round
+GET   /api/games/virtual-football/next
+GET   /api/admin/kpis                     (SUPER_ADMIN, FINANCE)
+GET   /api/admin/withdrawals/pending
+POST  /api/admin/withdrawals/:id/approve
+POST  /api/admin/withdrawals/:id/reject
+POST  /api/admin/odds/:matchId/override
+GET   /api/admin/users
+POST  /api/admin/users/:id/suspend
+ 
+Every admin route must check the caller’s AdminUser.role server-side
+(never trust a client-side role check alone) and write an AuditLog
+row on any mutating action.
+13  
+Internationalization & Responsible-Gambling UI
+INTERNATIONALIZATION
+• Wire up next-intl (or an equivalent) properly with /public/locales/
+  en.json and am.json message catalogs — do not hardcode any
+  user-facing string directly in a component
+• A visible language switcher (EN default) in the header and footer;
+  it is fine if Amharic coverage is partial for this demo, but the
+  switching mechanism itself must fully work
+ 
+RESPONSIBLE GAMBLING UI (front-end only is fine for this demo)
+• Self-exclusion toggle in Profile — when on, show a blocking modal on
+  any bet-placement attempt explaining the user has self-excluded
+• Deposit-limit field in Profile — when set, block “Add demo funds”
+  once the (demo) daily total would exceed it, with a clear message
+• A permanent “18+ / Responsible Gambling” line in the footer
+14  
+Non-Functional Requirements
+PERFORMANCE
+• Lighthouse mobile performance score ≥ 85 on the landing and
+  sportsbook pages
+• Usable (not broken, not painfully slow) on Chrome DevTools’ “Slow
+  3G” throttling profile
+• Images optimized via next/image; fonts subset/preloaded
+ 
+RELIABILITY & UX POLISH
+• Every data-fetching view has a loading (skeleton), empty, and error
+  state — never a blank white flash or an unhandled crash
+• Zero console errors/warnings in normal usage
+• Basic WCAG-friendly contrast (electric blue on navy and on white
+  both meet at least AA for normal text at the sizes used) and
+  keyboard-navigable forms and buttons
+ 
+SECURITY (even though this is a demo)
+• Passwords hashed with bcrypt or argon2, never stored in plain text
+• All input validated server-side with zod, not just client-side
+• Every secret/key in environment variables, never hardcoded or
+  committed to git; .env is gitignored, .env.example is committed
+• HTTPS enforced by the hosting provider; secure, httpOnly session
+  cookies
+15  
+Environment Variables
+ENVIRONMENT VARIABLES — list all of these in .env.example with a
+comment on each explaining what it’s for and where to get a free value:
+ 
+DATABASE_URL=
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+ODDS_API_KEY=              # optional; app must run fine if unset
+SOCKET_SERVER_URL=         # or NEXT_PUBLIC_SUPABASE_* if using
+                           # Supabase Realtime instead
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+ADMIN_SEED_EMAIL=
+ADMIN_SEED_PASSWORD=
+DEMO_MODE=true             # must gate every money-related code path
+16  
+Seed Data Specification
+SEED SCRIPT (/prisma/seed.ts) — populate at least:
+ 
+• 25–40 demo users with varied membershipLevel and totalWagered so
+  the VIP tiering and admin users table look real immediately
+• 4–6 leagues, 15–25 matches spread across past (settled), live, and
+  upcoming, each with a full odds set across at least 4 markets
+• 2–3 matches explicitly flagged isLive true with a live event
+  timeline already populated
+• 30–50 historical settled bets across the demo users, mixed
+  won/lost, so bet history and admin KPIs are populated on first
+  load — never an empty dashboard on first deploy
+• A handful of pending withdrawal requests so the admin panel has
+  something to approve/reject immediately
+• One seeded AdminUser with role SUPER_ADMIN using ADMIN_SEED_EMAIL /
+  ADMIN_SEED_PASSWORD from the environment
+ 
+Wire `prisma db seed` to run automatically as part of the documented
+setup steps, and re-runnable safely (upsert, not insert-only).
+17  
+Testing & QA Checklist
+BEFORE CALLING THE BUILD DONE, MANUALLY VERIFY EVERY ONE OF THESE:
+ 
+• Register → verify OTP → land logged-in, on both desktop and a
+  375px-wide mobile viewport
+• Add demo funds → balance updates instantly everywhere it’s shown
+• Build a 3-leg multi-bet, attempt a 4th leg from an already-used
+  match → correctly blocked with a visible message
+• Place a bet → appears in Bet History as pending within 1 second
+• Watch a live match for ~30 seconds → at least one odds value
+  visibly flashes and changes with no page refresh
+• Play one full round each of Keno, Aviator, and virtual football to
+  a settled result with a balance change
+• Log into /admin → KPIs show non-zero seeded numbers, approve one
+  pending withdrawal, override odds on one match and confirm the
+  change reflects on the public match page
+• Switch language EN ↔ AM → UI text changes without a full reload
+  breaking layout
+• Throttle to “Slow 3G” in DevTools → app remains usable, skeletons
+  show instead of blank flashes
+• Run Lighthouse mobile on / and /sports → performance ≥ 85
+• Zero errors in the browser console and the server logs during the
+  full walkthrough above
+18  
+Step-by-Step Deployment Guide (Free Tier)
+Use exactly this hosting combination, all on $0/month tiers: Vercel for the Next.js app (frontend + API routes), Supabase for the PostgreSQL database (and, if chosen in Section 8, Supabase Realtime for live updates instead of a separate Socket.IO server). Follow these steps in order and include them, adapted to what you actually did, in the README.
+DEPLOYMENT — FREE-TIER STACK: Vercel + Supabase
+ 
+Prerequisites
+• A GitHub account (free) to host the repository
+• A Vercel account (free Hobby tier) — sign up at vercel.com using
+  “Continue with GitHub” so the two are linked automatically
+• A Supabase account (free tier) — sign up at supabase.com
+ 
+Step 1 — Push the code to GitHub
+1. git init (if not already a repo)
+2. git add . && git commit -m "feat: initial demo MVP"
+3. Create a new empty repository on github.com (do NOT initialize it
+   with a README, to avoid conflicts)
+4. git remote add origin <your-repo-url>
+5. git branch -M main && git push -u origin main
+ 
+Step 2 — Create the free Postgres database on Supabase
+1. In the Supabase dashboard, click “New project”, pick a name and a
+   region close to Ethiopia/Europe, and set a strong database
+   password (save it)
+2. Once provisioned, go to Project Settings → Database → Connection
+   string, and copy the “Connection pooling” URI — this becomes
+   your DATABASE_URL
+3. If you are using Supabase Realtime (Section 8) or Supabase Storage,
+   also copy the Project URL and anon public key from Project
+   Settings → API for NEXT_PUBLIC_SUPABASE_URL and
+   NEXT_PUBLIC_SUPABASE_ANON_KEY
+ 
+Step 3 — Run migrations and seed the database
+1. Locally, put the Supabase DATABASE_URL into your .env file
+2. npx prisma migrate deploy      (creates all tables on Supabase)
+3. npx prisma db seed             (populates the demo data from
+   Section 16)
+4. Open Supabase’s Table Editor and spot-check that Users, Matches,
+   and Odds rows are actually there before moving on
+ 
+Step 4 — Create the Vercel project
+1. In the Vercel dashboard, click “Add New” → “Project”
+2. Import the GitHub repository you pushed in Step 1
+3. Framework Preset: Vercel auto-detects “Next.js” — leave Build
+   Command as "next build" and Output Directory as the default;
+   do not override these unless you have a reason to
+ 
+Step 5 — Add environment variables in Vercel
+Before clicking Deploy, open the “Environment Variables” section on
+the same import screen (or later under Project → Settings →
+Environment Variables) and add every variable from Section 15’s
+.env.example with its real value, in particular:
+• DATABASE_URL            → the Supabase connection-pooling URI
+• NEXTAUTH_URL             → your Vercel URL, e.g.
+   https://your-project.vercel.app  (update after first deploy
+   once you know the exact generated URL, then redeploy)
+• NEXTAUTH_SECRET          → generate one locally with:
+   openssl rand -base64 32
+• ODDS_API_KEY              → optional; leave blank to run on mock
+   data only, per Section 10
+• NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY → from
+   Step 2, if used
+• ADMIN_SEED_EMAIL / ADMIN_SEED_PASSWORD → the demo admin login you
+   want to hand to the client
+• DEMO_MODE=true            → always true for this deployment
+ 
+Step 6 — Deploy
+1. Click “Deploy”. Vercel installs dependencies, runs "next build",
+   and gives you a live https://<project>.vercel.app URL, usually
+   within 1–3 minutes
+2. Go back into Settings → Environment Variables and correct
+   NEXTAUTH_URL to the exact URL you were given, then trigger a
+   redeploy from the Deployments tab so the corrected value takes
+   effect
+ 
+Step 7 — Real-time on Vercel (read this if you chose Socket.IO in
+Section 8 instead of Supabase Realtime)
+Vercel’s serverless functions do not keep a persistent process
+alive, so a custom Socket.IO server cannot run inside the same
+Vercel deployment. Two working options:
+• Preferred for this demo: use Supabase Realtime channels instead of
+  Socket.IO — it runs fine from Vercel’s serverless functions with
+  no extra hosting
+• If Socket.IO is required: deploy just the small Socket.IO server as
+  its own free Web Service on Render.com (Render keeps a Node
+  process alive persistently, unlike Vercel), then point
+  NEXT_PUBLIC_SOCKET_URL in Vercel at that Render URL
+ 
+Step 8 — Verify the live deployment
+Open the live URL and manually run through the full Section 17 QA
+checklist end-to-end on the deployed site, not just locally —
+register, bet, play each game, and log into /admin.
+ 
+Step 9 — Hand off to the client
+Share the live URL plus the ADMIN_SEED_EMAIL / ADMIN_SEED_PASSWORD
+admin login. Every future code push to the main branch on GitHub
+auto-redeploys on Vercel, so updates before a client meeting are as
+simple as: git push.
+19  
+Deliverables, Permissions & Build Order
+DELIVERABLES
+1. A complete, runnable Git repository with a clear folder structure
+2. A seed script per Section 16 so the demo looks alive immediately
+3. A README covering: setup steps, the full env-variable list, what’s
+   real vs. simulated (per Section 10), and the deployment steps
+   actually used
+4. A live deployed demo URL on a free tier, plus a working demo admin
+   login
+5. A “Known Limitations / What Changes for Production” section in the
+   README (real KYC, real Telebirr/CBE Birr integration, a licensed
+   odds feed, a licensed casino aggregator, production-grade
+   uptime/security hardening, per Section 10)
+PERMISSIONS
+ 
+You have full autonomy to install any npm/pip packages you need,
+create or modify any files, choose specific free-tier services beyond
+what’s named in this brief if they better serve the demo, and make
+reasonable implementation-detail decisions without pausing to ask —
+just note significant choices in the README’s “Decisions Made”
+section.
+ 
+Do not, under any circumstances, wire up real payment processors,
+real gambling licenses/feeds that require a paid contract, or collect
+real user KYC documents in this demo build.
+SUGGESTED BUILD ORDER
+ 
+1. Scaffold repo + design system (Section 5) + static landing page
+2. Auth (register/OTP/login) + demo wallet + profile shell
+3. Sportsbook (mock data) + match detail + bet slip + bet placement
+   + bet history, with server-side odds re-validation
+4. Live-odds simulation (Section 8) + Live Now tab + live event
+   timeline on match detail
+5. Keno, then the Aviator-style game, then virtual football
+   (Section 9)
+6. Admin dashboard: KPIs, withdrawal approval, odds override, users
+7. i18n pass (EN/AM) + responsible-gambling UI (Section 13)
+8. Responsive/performance polish + accessibility pass
+9. Seed script (Section 16) + full QA pass (Section 17)
+10. Deploy following Section 18 exactly (Vercel + Supabase), verify
+    the live QA pass, then write the README

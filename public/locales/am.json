@@ -1,0 +1,141 @@
+{
+  "site": {
+    "name": "አዲስቤት",
+    "tagline": "ለኢትዮጵያ የተዘጋጀ የስፖርት ቤት እና ቨርቹዋል ጨዋታዎች ዴሞ"
+  },
+  "nav": {
+    "sports": "ስፖርት",
+    "games": "ጨዋታዎች",
+    "wallet": "ቦርሳ",
+    "profile": "መገለጫ",
+    "admin": "አስተዳዳሪ",
+    "join": "ተቀላቀል",
+    "login": "ግባ",
+    "logout": "ውጣ"
+  },
+  "hero": {
+    "badge": "ዴሞ ሞድ — እውነተኛ ገንዘብ የለም",
+    "title": "ለኢትዮጵያ የተዘጋጀ የዴሞ ቤቲንግ መድረክ",
+    "subtitle": "የዴሞ ገንዘብ፣ ቀጥታ ኦድስ፣ የጨዋታ ቦርሳ፣ ኬኖ፣ አቪዬተር እና አስተዳዳሪ መቆጣጠሪያ።",
+    "cta": "ይመዝገቡ እና የዴሞ ገንዘብ ያግኙ",
+    "browse": "ኦድስ ይመልከቱ"
+  },
+  "leagues": {
+    "matches": "ጨዋታዎች"
+  },
+  "promo": {
+    "welcome": "የእንኳን ደህና መጡ ቦነስ: 5,000 ETB-DEMO በቦርሳ ውስጥ ይጫኑ።"
+  },
+  "features": {
+    "safe": "ዴሞ-ደህና",
+    "safeDesc": "እውነተኛ ገንዘብ የለም፣ እውነተኛ ማንነት ማረጋገጫ የለም።",
+    "live": "ቀጥታ ቤቲንግ",
+    "liveDesc": "ኦድስ በየጥቂት ሰከንዶች ይቀየራል።",
+    "games": "ቨርቹዋል ጨዋታዎች",
+    "gamesDesc": "ኬኖ፣ ክራሽ ጨዋታ እና ቨርቹዋል እግር ኳስ።",
+    "admin": "አስተዳዳሪ ዝግጁ",
+    "adminDesc": "KPIs፣ ማውጣት፣ ኦድስ ለውጥ፣ ተጠቃሚዎች።"
+  },
+  "auth": {
+    "register": "የዴሞ መለያ ይፍጠሩ",
+    "login": "ግባ",
+    "verifyOtp": "OTP ያረጋግጡ",
+    "fullName": "ሙሉ ስም",
+    "phone": "ስልክ ቁጥር",
+    "password": "የይለፍ ቃል",
+    "confirmPassword": "የይለፍ ቃል ያረጋግጡ",
+    "dob": "የልደት ቀን",
+    "acceptTerms": "18+ መሆኔን አረጋግጣለሁ እና የዴሞ ውሎችን እቀበላለሁ።",
+    "demoOtp": "ዴሞ OTP: 123456",
+    "verify": "አረጋግጥ",
+    "resendOtp": "OTP ድጋሚ ላክ",
+    "alreadyHaveAccount": "መለያ አለዎት?",
+    "noAccount": "መለያ የለዎትም?"
+  },
+  "wallet": {
+    "title": "የዴሞ ቦርሳ",
+    "balance": "የአሁኑ ዴሞ ቀሪ ሂሳብ",
+    "addFunds": "የዴሞ ገንዘብ ጨምር",
+    "withdraw": "ማውጣት ጠይቅ",
+    "submitRequest": "የዴሞ ጥያቄ አስገባ",
+    "history": "የግብይት ታሪክ",
+    "depositLimit": "የዛሬ የማስገቢያ ገደብ ደርሷል።"
+  },
+  "betslip": {
+    "title": "የውርርድ ወረቀት",
+    "clear": "አጽዳ",
+    "single": "ነጠላ",
+    "multi": "ብዙ",
+    "system": "ስርዓት",
+    "empty": "ቲኬት ለመገንባት ኦድስ ይምረጡ።",
+    "remove": "አስወግድ",
+    "stake": "ድርሻ",
+    "totalOdds": "ጠቅላላ ኦድስ",
+    "potential": "ሊሆን የሚችል ተመላሽ",
+    "place": "ውርርድ አስቀምጥ",
+    "correlated": "ከተመሳሳይ ጨዋታ ምርጫዎች ለብዙ ውርርድ ታግደዋል።",
+    "oddsChanged": "ኦድስ ተቀይሯል — አዲሶቹን ይቀበላሉ?",
+    "minStake": "ዝቅተኛ ድርሻ 10 ዴሞ ETB ነው።",
+    "maxStake": "ከፍተኛ ድርሻ 10,000 ዴሞ ETB ነው።",
+    "placed": "ውርርድ በተሳካ ሁኔታ ተቀምጧል!"
+  },
+  "sports": {
+    "prematch": "ቅድመ-ጨዋታ",
+    "liveNow": "አሁን ቀጥታ",
+    "all": "ሁሉም",
+    "noLive": "አሁን ቀጥታ ጨዋታዎች የሉም።",
+    "markets": "ገበያዎች",
+    "timeline": "የቀጥታ ክስተት ሂደት"
+  },
+  "games": {
+    "title": "ካዚኖ እና ቨርቹዋል ጨዋታዎች",
+    "keno": "ኬኖ",
+    "aviator": "አቪዬተር-ዘይቤ ክራሽ",
+    "virtualFootball": "ቨርቹዋል እግር ኳስ",
+    "slots": "ስሎትስ",
+    "roulette": "ሩሌት",
+    "vip": "VIP ጠረጴዛዎች",
+    "comingSoon": "በቅርቡ",
+    "startDraw": "ዕጣ ጀምር",
+    "startRound": "ዙር ጀምር",
+    "cashOut": "ገንዘብ አውጣ",
+    "playMatch": "ጨዋታ አጫውት",
+    "pickNumbers": "እስከ 10 ቁጥሮች ይምረጡ።"
+  },
+  "profile": {
+    "title": "መገለጫ",
+    "vipTier": "VIP ደረጃ",
+    "betHistory": "የውርርድ ታሪክ",
+    "selfExclusion": "ራስ-ማግለል",
+    "depositLimit": "ዕለታዊ ዴሞ ማስገቢያ ገደብ",
+    "noLimit": "ገደብ የለም"
+  },
+  "admin": {
+    "title": "የአስተዳዳሪ ዳሽቦርድ",
+    "signups": "ምዝገባዎች",
+    "stakes": "ጠቅላላ ድርሻዎች",
+    "payouts": "ጠቅላላ ክፍያዎች",
+    "revenue": "የዴሞ ገቢ",
+    "online": "አሁን ኦንላይን",
+    "pendingWithdrawals": "በመጠበቅ ላይ ያሉ ማውጣቶች",
+    "approve": "አፅድቅ",
+    "reject": "ውድቅ",
+    "oddsOverride": "ኦድስ ለውጥ",
+    "saveOverride": "ለውጥ አስቀምጥ",
+    "users": "ተጠቃሚዎች",
+    "searchUsers": "ዴሞ ተጠቃሚዎችን ፈልግ",
+    "suspend": "ታግድ",
+    "unsuspend": "ታግ ላይ አንሳ"
+  },
+  "footer": {
+    "responsible": "18+ / ኃላፊነት ያለው ቁማር። ዴሞ ብቻ፣ እውነተኛ ገንዘብ የለም።"
+  },
+  "common": {
+    "loading": "በመጫን ላይ...",
+    "error": "ስህተት ተፈጥሯል",
+    "retry": "ዳግም ሞክር",
+    "back": "ተመለስ",
+    "save": "አስቀምጥ",
+    "cancel": "ሰርዝ"
+  }
+}

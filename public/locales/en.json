@@ -1,0 +1,141 @@
+{
+  "site": {
+    "name": "AddisBet",
+    "tagline": "Ethiopia-ready sportsbook and virtual games demo"
+  },
+  "nav": {
+    "sports": "Sports",
+    "games": "Games",
+    "wallet": "Wallet",
+    "profile": "Profile",
+    "admin": "Admin",
+    "join": "Join",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "hero": {
+    "badge": "DEMO MODE — No Real Money",
+    "title": "Ethiopia-ready sportsbook and virtual games demo",
+    "subtitle": "A clickable, demo-money platform for client meetings: live odds, bet slip, wallet, Keno, Aviator-style crash, virtual football, and admin controls.",
+    "cta": "Register & get demo funds",
+    "browse": "Browse odds"
+  },
+  "leagues": {
+    "matches": "matches"
+  },
+  "promo": {
+    "welcome": "Welcome demo bonus: instant 5,000 ETB-DEMO top-up available in Wallet."
+  },
+  "features": {
+    "safe": "Demo-safe",
+    "safeDesc": "No real money, no real KYC, no real SMS.",
+    "live": "Live betting",
+    "liveDesc": "Odds visibly move every few seconds.",
+    "games": "Virtual games",
+    "gamesDesc": "Keno, crash game, and virtual football.",
+    "admin": "Admin ready",
+    "adminDesc": "KPIs, withdrawals, odds override, users."
+  },
+  "auth": {
+    "register": "Create demo account",
+    "login": "Login",
+    "verifyOtp": "Verify OTP",
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "dob": "Date of birth",
+    "acceptTerms": "I confirm I am 18+ and accept demo terms.",
+    "demoOtp": "DEMO OTP: 123456",
+    "verify": "Verify",
+    "resendOtp": "Resend OTP",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?"
+  },
+  "wallet": {
+    "title": "Demo Wallet",
+    "balance": "Current demo balance",
+    "addFunds": "Add demo funds",
+    "withdraw": "Request withdrawal",
+    "submitRequest": "Submit demo request",
+    "history": "Transaction history",
+    "depositLimit": "Deposit limit reached for today."
+  },
+  "betslip": {
+    "title": "Bet Slip",
+    "clear": "Clear",
+    "single": "Single",
+    "multi": "Multi",
+    "system": "System",
+    "empty": "Tap odds to build a ticket.",
+    "remove": "Remove",
+    "stake": "Stake",
+    "totalOdds": "Total odds",
+    "potential": "Potential return",
+    "place": "Place Bet",
+    "correlated": "Same-match correlated selections are blocked for multi-bets.",
+    "oddsChanged": "Odds have changed — accept new odds?",
+    "minStake": "Minimum stake is 10 demo ETB.",
+    "maxStake": "Maximum stake is 10,000 demo ETB.",
+    "placed": "Bet placed successfully!"
+  },
+  "sports": {
+    "prematch": "Pre-match",
+    "liveNow": "Live Now",
+    "all": "All",
+    "noLive": "No live matches right now.",
+    "markets": "markets",
+    "timeline": "Live event timeline"
+  },
+  "games": {
+    "title": "Casino and virtual games",
+    "keno": "Keno",
+    "aviator": "Aviator-style crash",
+    "virtualFootball": "Virtual football",
+    "slots": "Slots",
+    "roulette": "Roulette",
+    "vip": "VIP tables",
+    "comingSoon": "Coming Soon",
+    "startDraw": "Start draw",
+    "startRound": "Start round",
+    "cashOut": "Cash Out",
+    "playMatch": "Play 75s match",
+    "pickNumbers": "Pick up to 10 numbers."
+  },
+  "profile": {
+    "title": "Profile",
+    "vipTier": "VIP tier",
+    "betHistory": "Bet history",
+    "selfExclusion": "Self-exclusion",
+    "depositLimit": "Daily demo deposit limit",
+    "noLimit": "No limit"
+  },
+  "admin": {
+    "title": "Admin dashboard",
+    "signups": "Signups",
+    "stakes": "Total stakes",
+    "payouts": "Total payouts",
+    "revenue": "Net demo revenue",
+    "online": "Online now",
+    "pendingWithdrawals": "Pending withdrawals",
+    "approve": "Approve",
+    "reject": "Reject",
+    "oddsOverride": "Odds override",
+    "saveOverride": "Save override",
+    "users": "Users",
+    "searchUsers": "Search demo users",
+    "suspend": "Suspend",
+    "unsuspend": "Unsuspend"
+  },
+  "footer": {
+    "responsible": "18+ / Responsible Gambling. Demo-only, no real money."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

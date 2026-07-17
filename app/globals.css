@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  /* Section 4 — Design System Tokens */
+  --color-navy: #0b1f3a;
+  --color-electric: #0066ff;
+  --color-electric-hover: #3399ff;
+  --color-light-grey: #f4f6f9;
+  --color-dark-text: #1a1a2e;
+  --color-muted: #6c757d;
+  --color-live: #e11d2e;
+  --color-win: #22c55e;
+  --color-blue-tint: #e8efff;
+
+  --font-family-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Custom animations */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tabular nums for monospaced numbers */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-electric);
+  color: white;
+}
