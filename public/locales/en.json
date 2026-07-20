@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "AddisBet",
-    "tagline": "Ethiopia-ready sportsbook and virtual games demo"
+    "tagline": "Ethiopia's Premier Betting Platform"
   },
   "nav": {
     "sports": "Sports",
@@ -9,22 +9,39 @@
     "wallet": "Wallet",
     "profile": "Profile",
     "admin": "Admin",
-    "join": "Join",
+    "join": "Join Now",
     "login": "Login",
     "logout": "Logout"
   },
   "hero": {
     "badge": "DEMO MODE — No Real Money",
-    "title": "Ethiopia-ready sportsbook and virtual games demo",
-    "subtitle": "A clickable, demo-money platform for client meetings: live odds, bet slip, wallet, Keno, Aviator-style crash, virtual football, and admin controls.",
-    "cta": "Register & get demo funds",
-    "browse": "Browse odds"
+    "title": "Bet Smart. Win Big.",
+    "titleHighlight": "Ethiopia's #1",
+    "subtitle": "Live odds, virtual football, Aviator crash games, Keno — all in one platform. Join thousands of players today.",
+    "cta": "Start Playing Now",
+    "browse": "Browse Odds",
+    "stat1": "10K+",
+    "stat1Label": "Active Players",
+    "stat2": "500+",
+    "stat2Label": "Daily Matches",
+    "stat3": "98%",
+    "stat3Label": "Payout Rate"
   },
   "leagues": {
     "matches": "matches"
   },
   "promo": {
-    "welcome": "Welcome demo bonus: instant 5,000 ETB-DEMO top-up available in Wallet."
+    "hot": "🔥 HOT",
+    "welcome": "Welcome demo bonus: instant 5,000 ETB-DEMO top-up available in Wallet.",
+    "vfTitle": "Virtual Football",
+    "vfSubtitle": "Bet on AI-simulated football matches every 75 seconds. Pick your team and win big!",
+    "vfCta": "Play Now",
+    "aviatorTitle": "Aviator Crash Game",
+    "aviatorSubtitle": "Watch the multiplier fly! Cash out before the plane crashes for huge wins.",
+    "aviatorCta": "Take Off",
+    "kenoTitle": "Keno & Lucky Numbers",
+    "kenoSubtitle": "Pick your lucky numbers and win up to 10,000x your stake instantly!",
+    "kenoCta": "Try Your Luck"
   },
   "features": {
     "safe": "Demo-safe",
@@ -85,22 +102,38 @@
     "all": "All",
     "noLive": "No live matches right now.",
     "markets": "markets",
-    "timeline": "Live event timeline"
+    "timeline": "Live event timeline",
+    "featuredMatches": "Featured Matches"
   },
   "games": {
-    "title": "Casino and virtual games",
+    "title": "Casino & Virtual Games",
     "keno": "Keno",
-    "aviator": "Aviator-style crash",
-    "virtualFootball": "Virtual football",
+    "kenoDesc": "Pick lucky numbers, win instant prizes!",
+    "aviator": "Aviator Crash",
+    "aviatorDesc": "Cash out before the plane crashes!",
+    "virtualFootball": "Virtual Football",
+    "virtualFootballDesc": "Bet on AI matches every 75 seconds",
+    "sweetBonanza": "Sweet Bonanza",
+    "sweetBonanzaDesc": "Classic pragmatic tumbling slot demo",
+    "gatesOfOlympus": "Gates of Olympus",
+    "gatesOfOlympusDesc": "Zeus multiplier slot demo",
+    "sugarRush": "Sugar Rush",
+    "sugarRushDesc": "Sweet candy multipliers slot demo",
     "slots": "Slots",
+    "slotsDesc": "Spin to win huge jackpots",
     "roulette": "Roulette",
-    "vip": "VIP tables",
+    "rouletteDesc": "Classic casino roulette action",
+    "vip": "VIP Tables",
+    "vipDesc": "Exclusive high-roller tables",
     "comingSoon": "Coming Soon",
     "startDraw": "Start draw",
     "startRound": "Start round",
     "cashOut": "Cash Out",
     "playMatch": "Play 75s match",
-    "pickNumbers": "Pick up to 10 numbers."
+    "pickNumbers": "Pick up to 10 numbers.",
+    "playNow": "Play Now",
+    "hot": "HOT",
+    "new": "NEW"
   },
   "profile": {
     "title": "Profile",

@@ -14,6 +14,7 @@ type MatchData = {
   id: string; league: string; homeTeam: string; awayTeam: string; isLive: boolean;
   minute?: number; homeScore?: number; awayScore?: number; startTime: string;
   odds: OddsData[]; events: EventData[];
+  error?: string;
 };
 
 export default function MatchDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -39,9 +40,19 @@ export default function MatchDetailPage({ params }: { params: Promise<{ id: stri
   }, [match?.isLive, fetchMatch]);
 
   if (loading) return <Shell><div className="mx-auto max-w-7xl px-4 py-6"><SkeletonRow rows={6} /></div></Shell>;
-  if (!match) return <Shell><div className="mx-auto max-w-7xl px-4 py-10 text-center font-bold text-muted">Match not found</div></Shell>;
+  if (!match || !Array.isArray(match.odds)) {
+    return (
+      <Shell>
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center font-bold text-muted">
+          {match?.error ? match.error : "Match not found or odds unavailable."}
+        </div>
+      </Shell>
+    );
+  }
 
-  const marketGroups = [...new Set(match.odds.map((o) => o.marketName))];
+  const odds = Array.isArray(match.odds) ? match.odds : [];
+  const events = Array.isArray(match.events) ? match.events : [];
+  const marketGroups = [...new Set(odds.map((o) => o.marketName))];
 
   return (
     <Shell>

@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "አዲስቤት",
-    "tagline": "ለኢትዮጵያ የተዘጋጀ የስፖርት ቤት እና ቨርቹዋል ጨዋታዎች ዴሞ"
+    "tagline": "የኢትዮጵያ ቁጥር 1 የቤቲንግ መድረክ"
   },
   "nav": {
     "sports": "ስፖርት",
@@ -9,22 +9,39 @@
     "wallet": "ቦርሳ",
     "profile": "መገለጫ",
     "admin": "አስተዳዳሪ",
-    "join": "ተቀላቀል",
+    "join": "አሁን ተቀላቀል",
     "login": "ግባ",
     "logout": "ውጣ"
   },
   "hero": {
     "badge": "ዴሞ ሞድ — እውነተኛ ገንዘብ የለም",
-    "title": "ለኢትዮጵያ የተዘጋጀ የዴሞ ቤቲንግ መድረክ",
-    "subtitle": "የዴሞ ገንዘብ፣ ቀጥታ ኦድስ፣ የጨዋታ ቦርሳ፣ ኬኖ፣ አቪዬተር እና አስተዳዳሪ መቆጣጠሪያ።",
-    "cta": "ይመዝገቡ እና የዴሞ ገንዘብ ያግኙ",
-    "browse": "ኦድስ ይመልከቱ"
+    "title": "በብልህነት ተወራረዱ። ትልቅ አሸንፉ።",
+    "titleHighlight": "የኢትዮጵያ #1",
+    "subtitle": "ቀጥታ ኦድስ፣ ቨርቹዋል እግር ኳስ፣ አቪዬተር ክራሽ ጨዋታ፣ ኬኖ — ሁሉም በአንድ መድረክ። ዛሬ ይቀላቀሉ።",
+    "cta": "አሁን ይጫወቱ",
+    "browse": "ኦድስ ይመልከቱ",
+    "stat1": "10ሺ+",
+    "stat1Label": "ንቁ ተጫዋቾች",
+    "stat2": "500+",
+    "stat2Label": "ዕለታዊ ጨዋታዎች",
+    "stat3": "98%",
+    "stat3Label": "የክፍያ መጠን"
   },
   "leagues": {
     "matches": "ጨዋታዎች"
   },
   "promo": {
-    "welcome": "የእንኳን ደህና መጡ ቦነስ: 5,000 ETB-DEMO በቦርሳ ውስጥ ይጫኑ።"
+    "hot": "🔥 ትኩስ",
+    "welcome": "የእንኳን ደህና መጡ ቦነስ: 5,000 ETB-DEMO በቦርሳ ውስጥ ይጫኑ።",
+    "vfTitle": "ቨርቹዋል እግር ኳስ",
+    "vfSubtitle": "በየ 75 ሰከንድ በ AI-ሲሙሌትድ የእግር ኳስ ጨዋታዎች ተወራረዱ! ቡድንዎን ይምረጡ!",
+    "vfCta": "አሁን ይጫወቱ",
+    "aviatorTitle": "አቪዬተር ክራሽ ጨዋታ",
+    "aviatorSubtitle": "ማባዣው ሲበር ይመልከቱ! አውሮፕላኑ ከመውደቁ በፊት ገንዘብዎን ያውጡ!",
+    "aviatorCta": "ይነሱ",
+    "kenoTitle": "ኬኖ እና እድለኛ ቁጥሮች",
+    "kenoSubtitle": "እድለኛ ቁጥሮችዎን ይምረጡ እና ወዲያውኑ እስከ 10,000x ያሸንፉ!",
+    "kenoCta": "እድልዎን ይሞክሩ"
   },
   "features": {
     "safe": "ዴሞ-ደህና",
@@ -85,22 +102,38 @@
     "all": "ሁሉም",
     "noLive": "አሁን ቀጥታ ጨዋታዎች የሉም።",
     "markets": "ገበያዎች",
-    "timeline": "የቀጥታ ክስተት ሂደት"
+    "timeline": "የቀጥታ ክስተት ሂደት",
+    "featuredMatches": "ተመራጭ ጨዋታዎች"
   },
   "games": {
     "title": "ካዚኖ እና ቨርቹዋል ጨዋታዎች",
     "keno": "ኬኖ",
-    "aviator": "አቪዬተር-ዘይቤ ክራሽ",
+    "kenoDesc": "እድለኛ ቁጥሮችን ይምረጡ፣ ፈጣን ሽልማቶችን ያሸንፉ!",
+    "aviator": "አቪዬተር ክራሽ",
+    "aviatorDesc": "አውሮፕላኑ ከመውደቁ በፊት ገንዘብ ያውጡ!",
     "virtualFootball": "ቨርቹዋል እግር ኳስ",
-    "slots": "ስሎትስ",
+    "virtualFootballDesc": "በየ 75 ሰከንድ በ AI ግጥሚያዎች ላይ ይወራረዱ",
+    "sweetBonanza": "Sweet Bonanza",
+    "sweetBonanzaDesc": "Classic pragmatic tumbling slot demo",
+    "gatesOfOlympus": "Gates of Olympus",
+    "gatesOfOlympusDesc": "Zeus multiplier slot demo",
+    "sugarRush": "Sugar Rush",
+    "sugarRushDesc": "Sweet candy multipliers slot demo",
+    "slots": "ስሎቶች",
+    "slotsDesc": "ትልቅ ጃክፖት ለማሸነፍ ያሽከርክሩ",
     "roulette": "ሩሌት",
+    "rouletteDesc": "ክላሲክ ካዚኖ ሩሌት",
     "vip": "VIP ጠረጴዛዎች",
+    "vipDesc": "ልዩ ከፍተኛ-ተጫዋች ጠረጴዛዎች",
     "comingSoon": "በቅርቡ",
     "startDraw": "ዕጣ ጀምር",
     "startRound": "ዙር ጀምር",
     "cashOut": "ገንዘብ አውጣ",
     "playMatch": "ጨዋታ አጫውት",
-    "pickNumbers": "እስከ 10 ቁጥሮች ይምረጡ።"
+    "pickNumbers": "እስከ 10 ቁጥሮች ይምረጡ።",
+    "playNow": "አሁን ይጫወቱ",
+    "hot": "ትኩስ",
+    "new": "አዲስ"
   },
   "profile": {
     "title": "መገለጫ",

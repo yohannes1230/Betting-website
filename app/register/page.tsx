@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, Zap } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { Button, Card } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
@@ -41,27 +41,31 @@ export default function RegisterPage() {
     }
   };
 
+  const inputClass = "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-text-primary outline-none transition focus:border-electric/40 focus:ring-2 focus:ring-electric/20 placeholder:text-text-dim";
+
   return (
     <Shell>
       <div className="mx-auto max-w-lg px-4 py-10">
-        <Card>
-          <Lock className="h-8 w-8 text-electric" />
-          <h1 className="mt-3 text-2xl font-black text-navy">{t("auth.register")}</h1>
+        <Card glow>
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-electric/10">
+            <Lock className="h-6 w-6 text-electric" />
+          </div>
+          <h1 className="mt-4 text-2xl font-black text-text-primary">{t("auth.register")}</h1>
 
           <div className="mt-5 space-y-3">
             <input
               value={form.fullName}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-              className="w-full rounded-xl border border-blue-tint px-4 py-3 outline-none focus:ring-2 focus:ring-electric"
+              className={inputClass}
               placeholder={t("auth.fullName")}
             />
 
-            <div className="flex rounded-xl border border-blue-tint bg-white">
-              <span className="px-4 py-3 font-black text-muted">+251</span>
+            <div className="flex rounded-xl border border-white/10 bg-white/5">
+              <span className="px-4 py-3 font-black text-text-muted">+251</span>
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "").slice(0, 9) })}
-                className="w-full rounded-r-xl px-3 py-3 outline-none"
+                className="w-full rounded-r-xl bg-transparent px-3 py-3 text-text-primary outline-none placeholder:text-text-dim"
                 placeholder="900000000"
               />
             </div>
@@ -70,7 +74,7 @@ export default function RegisterPage() {
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-xl border border-blue-tint px-4 py-3 outline-none focus:ring-2 focus:ring-electric"
+              className={inputClass}
               placeholder={t("auth.password")}
             />
 
@@ -78,7 +82,7 @@ export default function RegisterPage() {
               type="password"
               value={form.confirmPassword}
               onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-              className="w-full rounded-xl border border-blue-tint px-4 py-3 outline-none focus:ring-2 focus:ring-electric"
+              className={inputClass}
               placeholder={t("auth.confirmPassword")}
             />
 
@@ -86,28 +90,29 @@ export default function RegisterPage() {
               type="date"
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
-              className="w-full rounded-xl border border-blue-tint px-4 py-3 outline-none focus:ring-2 focus:ring-electric"
+              className={inputClass}
             />
 
-            <label className="flex items-start gap-2 text-sm font-bold">
+            <label className="flex items-start gap-2 text-sm font-bold text-text-secondary">
               <input
                 type="checkbox"
                 checked={form.acceptTerms}
                 onChange={(e) => setForm({ ...form, acceptTerms: e.target.checked })}
-                className="mt-0.5"
+                className="mt-0.5 accent-electric"
               />
               {t("auth.acceptTerms")}
             </label>
 
             {error && (
-              <div className="rounded-xl bg-live/10 p-3 text-sm font-bold text-live">{error}</div>
+              <div className="rounded-xl bg-live/10 border border-live/20 p-3 text-sm font-bold text-live">{error}</div>
             )}
 
-            <Button className="w-full" onClick={handleSubmit} disabled={loading}>
+            <Button className="w-full" onClick={handleSubmit} disabled={loading} variant="gold">
+              <Zap className="h-4 w-4" />
               {loading ? t("common.loading") : t("auth.register")}
             </Button>
 
-            <p className="text-center text-sm font-semibold text-muted">
+            <p className="text-center text-sm font-semibold text-text-muted">
               {t("auth.alreadyHaveAccount")}{" "}
               <Link href="/login" className="font-bold text-electric hover:underline">
                 {t("auth.login")}

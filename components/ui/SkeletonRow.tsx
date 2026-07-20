@@ -4,9 +4,9 @@ export function SkeletonRow({ rows = 3 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="h-20 rounded-xl"
+          className="h-20 rounded-2xl"
           style={{
-            background: "linear-gradient(90deg, #f4f6f9 25%, #e8ebf0 50%, #f4f6f9 75%)",
+            background: "linear-gradient(90deg, #111827 25%, #1a2235 50%, #111827 75%)",
             backgroundSize: "400% 100%",
             animation: "shimmer 1.5s infinite",
           }}
@@ -19,9 +19,9 @@ export function SkeletonRow({ rows = 3 }: { rows?: number }) {
 export function SkeletonCard() {
   return (
     <div
-      className="h-32 rounded-xl"
+      className="h-32 rounded-2xl"
       style={{
-        background: "linear-gradient(90deg, #f4f6f9 25%, #e8ebf0 50%, #f4f6f9 75%)",
+        background: "linear-gradient(90deg, #111827 25%, #1a2235 50%, #111827 75%)",
         backgroundSize: "400% 100%",
         animation: "shimmer 1.5s infinite",
       }}

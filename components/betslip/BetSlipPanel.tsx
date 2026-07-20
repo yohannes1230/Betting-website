@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Zap } from "lucide-react";
 import { useBetSlipStore } from "@/lib/store";
 import { Button, Card } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
@@ -61,6 +61,11 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
         setMessage(`${t("betslip.placed")} Ticket: ${data.ticketId}`);
         setMessageType("success");
         clearSlip();
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("walletBalanceUpdated", {
+            detail: { balance: data?.balance ?? null, source: "bet-placement" },
+          }));
+        }
       }
     } catch {
       setMessage("Network error");
@@ -73,26 +78,32 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
   if (compact && slip.length === 0) return null;
 
   return (
-    <Card className={clsx("space-y-3", compact && "max-h-64 overflow-auto")}>
+    <Card className={clsx("space-y-3", compact && "max-h-64 overflow-auto")} glow={slip.length > 0}>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-black text-navy">
-          {t("betslip.title")} {slip.length > 0 && `(${slip.length})`}
+        <h2 className="text-lg font-black text-text-primary">
+          {t("betslip.title")} {slip.length > 0 && (
+            <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-electric text-[10px] text-white">
+              {slip.length}
+            </span>
+          )}
         </h2>
         {slip.length > 0 && (
-          <button onClick={clearSlip} className="text-xs font-bold text-muted hover:text-live">
+          <button onClick={clearSlip} className="text-xs font-bold text-text-muted hover:text-live transition">
             {t("betslip.clear")}
           </button>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="grid grid-cols-3 rounded-full bg-light-grey p-1 text-xs font-black">
+      <div className="grid grid-cols-3 rounded-xl bg-white/5 p-1 text-xs font-black">
         {[t("betslip.single"), t("betslip.multi"), t("betslip.system")].map((tab, i) => (
           <span
             key={tab}
             className={clsx(
-              "rounded-full px-2 py-2 text-center",
-              i === (slip.length > 1 ? 1 : 0) && "bg-white text-electric shadow-sm",
+              "rounded-lg px-2 py-2 text-center transition",
+              i === (slip.length > 1 ? 1 : 0)
+                ? "bg-electric/15 text-electric"
+                : "text-text-muted",
             )}
           >
             {tab}
@@ -102,20 +113,20 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
 
       {/* Selections */}
       {slip.length === 0 ? (
-        <div className="rounded-xl bg-light-grey p-4 text-sm font-semibold text-muted">
+        <div className="rounded-xl bg-white/5 p-4 text-sm font-semibold text-text-muted">
           {t("betslip.empty")}
         </div>
       ) : (
         <div className="space-y-2">
           {slip.map((item) => (
-            <div key={item.oddsId} className="rounded-xl border border-blue-tint p-3">
+            <div key={item.oddsId} className="rounded-xl border border-white/8 bg-white/3 p-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="text-sm font-black text-navy">{item.selection}</div>
-                  <div className="text-xs font-semibold text-muted">
+                  <div className="text-sm font-black text-text-primary">{item.selection}</div>
+                  <div className="text-xs font-semibold text-text-muted">
                     {item.homeTeam} vs {item.awayTeam}
                   </div>
-                  <div className="text-xs text-muted">{item.marketName}</div>
+                  <div className="text-xs text-text-dim">{item.marketName}</div>
                 </div>
                 <button
                   onClick={() => removeSelection(item.oddsId)}
@@ -137,7 +148,7 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
 
       {/* Correlated warning */}
       {duplicateMatch && (
-        <div className="rounded-xl bg-live/10 p-3 text-sm font-bold text-live">
+        <div className="rounded-xl bg-live/10 p-3 text-sm font-bold text-live border border-live/20">
           {t("betslip.correlated")}
         </div>
       )}
@@ -145,7 +156,7 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
       {/* Stake & calculations */}
       {slip.length > 0 && (
         <>
-          <label className="block text-xs font-black uppercase text-muted">
+          <label className="block text-xs font-black uppercase text-text-muted">
             {t("betslip.stake")}
           </label>
           <input
@@ -154,20 +165,20 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
             type="number"
             min={10}
             max={10000}
-            className="w-full rounded-xl border border-blue-tint px-3 py-3 font-black outline-none focus:ring-2 focus:ring-electric"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 font-black text-text-primary outline-none transition focus:border-electric/40 focus:ring-2 focus:ring-electric/20"
             style={{ fontVariantNumeric: "tabular-nums" }}
           />
 
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="rounded-xl bg-light-grey p-3">
-              <div className="text-muted">{t("betslip.totalOdds")}</div>
-              <div className="font-black" style={{ fontVariantNumeric: "tabular-nums" }}>
+            <div className="rounded-xl bg-white/5 p-3">
+              <div className="text-text-muted">{t("betslip.totalOdds")}</div>
+              <div className="font-black text-text-primary" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {totalOdds.toFixed(2)}
               </div>
             </div>
-            <div className="rounded-xl bg-light-grey p-3">
-              <div className="text-muted">{t("betslip.potential")}</div>
-              <div className="font-black" style={{ fontVariantNumeric: "tabular-nums" }}>
+            <div className="rounded-xl bg-neon-green/10 p-3">
+              <div className="text-neon-green/70">{t("betslip.potential")}</div>
+              <div className="font-black text-neon-green" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {potential.toLocaleString()} ETB
               </div>
             </div>
@@ -175,10 +186,11 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
 
           <Button
             className="w-full"
+            variant="gold"
             disabled={duplicateMatch || slip.length === 0 || loading}
             onClick={handlePlaceBet}
           >
-            <CheckCircle2 className="h-4 w-4" />
+            <Zap className="h-4 w-4" />
             {loading ? t("common.loading") : t("betslip.place")}
           </Button>
         </>
@@ -188,10 +200,10 @@ export function BetSlipPanel({ compact = false }: { compact?: boolean }) {
       {message && (
         <div
           className={clsx(
-            "rounded-xl p-3 text-sm font-bold",
-            messageType === "success" && "bg-win/10 text-win",
-            messageType === "error" && "bg-live/10 text-live",
-            messageType === "info" && "bg-blue-tint text-navy",
+            "rounded-xl p-3 text-sm font-bold border",
+            messageType === "success" && "bg-neon-green/10 text-neon-green border-neon-green/20",
+            messageType === "error" && "bg-live/10 text-live border-live/20",
+            messageType === "info" && "bg-electric/10 text-electric border-electric/20",
           )}
         >
           {message}

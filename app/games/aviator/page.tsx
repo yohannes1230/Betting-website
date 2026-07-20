@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Plane } from "lucide-react";
+import { Plane, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 import { Shell } from "@/components/Shell";
 import { Button, Card } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
@@ -47,36 +48,76 @@ export default function AviatorPage() {
     return () => clearInterval(id);
   }, [crashed, hasBet, fetchRound]);
 
-  // Canvas animation
+  // Enhanced canvas animation with dark theme
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Star field
+    const stars: Array<{ x: number; y: number; r: number; a: number }> = [];
+    for (let i = 0; i < 80; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        a: Math.random() * 0.5 + 0.2,
+      });
+    }
+
     const draw = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
 
-      // Background
-      ctx.fillStyle = "#0b1f3a";
+      // Dark background with gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bgGrad.addColorStop(0, "#050a18");
+      bgGrad.addColorStop(1, "#0a0e1a");
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Grid lines
-      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      // Draw stars
+      stars.forEach((star) => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.a})`;
+        ctx.fill();
+      });
+
+      // Grid lines (subtle)
+      ctx.strokeStyle = "rgba(255,255,255,0.03)";
       ctx.lineWidth = 1;
       for (let y = 0; y < h; y += 40) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
       }
+      for (let x = 0; x < w; x += 60) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
 
-      // Curve
-      ctx.strokeStyle = crashed ? "#e11d2e" : "#0066ff";
+      // Determine curve color based on multiplier
+      let curveColor: string;
+      if (crashed) {
+        curveColor = "#ef4444";
+      } else if (multiplier >= 5) {
+        curveColor = "#fbbf24"; // gold
+      } else if (multiplier >= 2) {
+        curveColor = "#22c55e"; // green
+      } else {
+        curveColor = "#00d4ff"; // electric blue
+      }
+
+      // Draw curve with gradient trail
+      const points = Math.min(200, Math.floor((multiplier - 1) * 60));
+      
+      // Glow trail
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = curveColor;
+      ctx.strokeStyle = curveColor;
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(40, h - 40);
 
-      const points = Math.min(200, Math.floor((multiplier - 1) * 60));
       for (let i = 0; i <= points; i++) {
         const progress = i / 200;
         const x = 40 + progress * (w - 80);
@@ -85,11 +126,35 @@ export default function AviatorPage() {
       }
       ctx.stroke();
 
-      // Plane emoji at end of curve
+      // Filled area under curve (subtle)
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.moveTo(40, h - 40);
+      for (let i = 0; i <= points; i++) {
+        const progress = i / 200;
+        const x = 40 + progress * (w - 80);
+        const yVal = h - 40 - Math.pow(progress, 1.5) * (h - 80);
+        ctx.lineTo(x, yVal);
+      }
+      const lastX = 40 + (points / 200) * (w - 80);
+      ctx.lineTo(lastX, h - 40);
+      ctx.closePath();
+      const fillGrad = ctx.createLinearGradient(0, 0, 0, h);
+      fillGrad.addColorStop(0, curveColor + "15");
+      fillGrad.addColorStop(1, curveColor + "02");
+      ctx.fillStyle = fillGrad;
+      ctx.fill();
+
+      // Plane at end of curve
       const endX = 40 + (points / 200) * (w - 80);
       const endY = h - 40 - Math.pow(points / 200, 1.5) * (h - 80);
-      ctx.font = "24px serif";
-      ctx.fillText("✈️", endX - 12, endY - 5);
+      
+      // Plane glow
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = curveColor;
+      ctx.font = "28px serif";
+      ctx.fillText("✈️", endX - 14, endY - 5);
+      ctx.shadowBlur = 0;
 
       animFrameRef.current = requestAnimationFrame(draw);
     };
@@ -139,72 +204,111 @@ export default function AviatorPage() {
     fetchRound();
   };
 
+  // Multiplier color class
+  const multiplierColor = crashed
+    ? "text-live"
+    : multiplier >= 5
+    ? "text-gold"
+    : multiplier >= 2
+    ? "text-neon-green"
+    : "text-electric";
+
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <Card>
-          <div className="mb-5 flex items-center gap-3">
-            <Plane className="h-8 w-8 text-electric" />
-            <h1 className="text-3xl font-black text-navy">{t("games.aviator")}</h1>
+        <Card glow>
+          {/* Header */}
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-electric/10">
+              <Plane className="h-6 w-6 text-electric animate-plane-fly" />
+            </div>
+            <h1 className="text-2xl font-black text-text-primary md:text-3xl">
+              {t("games.aviator")}
+            </h1>
           </div>
 
           {/* Game canvas */}
-          <div className="relative overflow-hidden rounded-xl">
-            <canvas ref={canvasRef} width={800} height={400} className="w-full rounded-xl" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/5">
+            <canvas ref={canvasRef} width={800} height={400} className="w-full rounded-2xl" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div
-                  className="text-6xl font-black text-white drop-shadow-2xl"
-                  style={{ fontVariantNumeric: "tabular-nums" }}
+                <motion.div
+                  className={`text-6xl font-black drop-shadow-2xl tabular ${multiplierColor}`}
+                  key={multiplier.toFixed(2)}
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
                 >
                   {multiplier.toFixed(2)}x
-                </div>
+                </motion.div>
                 {crashed && (
-                  <div className="mt-2 text-lg font-black text-live">CRASHED!</div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="mt-2 rounded-full bg-live/20 px-4 py-1 text-lg font-black text-live"
+                  >
+                    💥 CRASHED!
+                  </motion.div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* History */}
-          <div className="mt-3 no-scrollbar flex gap-2 overflow-x-auto">
-            {history.map((h) => (
-              <span
+          {/* History pills */}
+          <div className="mt-4 no-scrollbar flex gap-2 overflow-x-auto">
+            {history.map((h, i) => (
+              <motion.span
                 key={h.id}
-                className={`rounded-full px-3 py-1 text-xs font-black ${h.crashPoint >= 2 ? "bg-win/10 text-win" : "bg-live/10 text-live"}`}
-                style={{ fontVariantNumeric: "tabular-nums" }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className={`flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-black tabular ${
+                  h.crashPoint >= 2
+                    ? "bg-neon-green/10 text-neon-green ring-1 ring-neon-green/20"
+                    : "bg-live/10 text-live ring-1 ring-live/20"
+                }`}
               >
                 {h.crashPoint.toFixed(2)}x
-              </span>
+              </motion.span>
             ))}
           </div>
 
           {/* Controls */}
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <input
               value={stake}
               onChange={(e) => setStake(Number(e.target.value))}
               type="number"
               min={10}
-              className="min-h-11 flex-1 rounded-xl border border-blue-tint px-3 py-2 font-black outline-none focus:ring-2 focus:ring-electric"
-              style={{ fontVariantNumeric: "tabular-nums" }}
+              className="min-h-11 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2 font-black text-text-primary outline-none transition focus:border-electric/40 focus:ring-2 focus:ring-electric/20 tabular"
               disabled={hasBet}
             />
             {crashed ? (
-              <Button onClick={newRound}>{t("games.startRound")}</Button>
+              <Button onClick={newRound} variant="gold">
+                <Zap className="h-4 w-4" />
+                {t("games.startRound")}
+              </Button>
             ) : hasBet ? (
               <Button variant="danger" onClick={cashOut} disabled={loading}>
                 {t("games.cashOut")} ({multiplier.toFixed(2)}x)
               </Button>
             ) : (
-              <Button onClick={placeBet} disabled={loading}>
+              <Button onClick={placeBet} disabled={loading} variant="gold">
+                <Plane className="h-4 w-4" />
                 {loading ? t("common.loading") : t("games.startRound")}
               </Button>
             )}
           </div>
 
+          {/* Message */}
           {message && (
-            <div className="mt-3 rounded-xl bg-blue-tint p-4 font-black text-navy">{message}</div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 rounded-xl bg-electric/10 p-4 font-black text-electric border border-electric/20"
+            >
+              {message}
+            </motion.div>
           )}
         </Card>
       </div>

@@ -297,3 +297,15 @@ model SystemConfig {
   key   String @id
   value String
 }
+
+model AgentDepositAccount {
+  id            String   @id @default(cuid())
+  provider      String   // e.g. "CBE", "Telebirr"
+  accountName   String
+  accountNumber String
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([provider])
+}

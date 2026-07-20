@@ -30,6 +30,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("addisbet-locale") as Locale | null;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saved === "am" || saved === "en") setLocaleState(saved);
   }, []);
 

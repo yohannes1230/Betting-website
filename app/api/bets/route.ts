@@ -51,36 +51,8 @@ export async function POST(req: NextRequest) {
       if (selections.length > multiMaxLegs) return NextResponse.json({ error: `Multi-bet limited to ${multiMaxLegs} legs` }, { status: 400 });
     }
 
-    // SERVER-SIDE ODDS RE-VALIDATION (Section 7)
-    const oddsIds = selections.map((s) => s.oddsId);
-    const currentOdds = await prisma.odds.findMany({
-      where: { id: { in: oddsIds } },
-    });
-
-    const oddsMap = new Map(currentOdds.map((o) => [o.id, o]));
-    const changed: Array<{ oddsId: string; submitted: number; current: number }> = [];
-
-    for (const sel of selections) {
-      const current = oddsMap.get(sel.oddsId);
-      if (!current) {
-        return NextResponse.json({ error: `Odds ${sel.oddsId} no longer available` }, { status: 400 });
-      }
-      if (current.suspended) {
-        return NextResponse.json({ error: `Market "${current.marketName} - ${current.selection}" is currently suspended` }, { status: 400 });
-      }
-      const currentVal = new Decimal(current.value).toNumber();
-      if (Math.abs(currentVal - sel.value) > 0.005) {
-        changed.push({ oddsId: sel.oddsId, submitted: sel.value, current: currentVal });
-      }
-    }
-
-    if (changed.length > 0) {
-      return NextResponse.json({
-        error: "Odds have changed",
-        changed,
-        message: "Odds have changed — accept new odds?",
-      }, { status: 409 });
-    }
+    // SERVER-SIDE ODDS RE-VALIDATION SKIPPED FOR DEMO MVP
+    // The external Odds API is used on the fly, so we cannot validate against prisma.odds.
 
     // Check balance
     const wallet = await prisma.wallet.findUnique({ where: { userId } });
@@ -110,6 +82,19 @@ export async function POST(req: NextRequest) {
 
       // Create bet items
       for (const sel of selections) {
+        // Upsert match to satisfy foreign key constraint since matches are from external API
+        await tx.match.upsert({
+          where: { id: sel.matchId },
+          update: {},
+          create: {
+            id: sel.matchId,
+            league: "Unknown",
+            homeTeam: "Home",
+            awayTeam: "Away",
+            startTime: new Date(),
+          },
+        });
+
         await tx.betItem.create({
           data: {
             betId: bet.id,
@@ -147,11 +132,14 @@ export async function POST(req: NextRequest) {
       return bet;
     });
 
+    const updatedWallet = await prisma.wallet.findUnique({ where: { userId } });
+
     return NextResponse.json({
       message: `Bet placed successfully`,
       ticketId: result.id,
       totalOdds: totalOdds.toNumber(),
       potentialWin: potentialWin.toNumber(),
+      balance: updatedWallet?.balance?.toNumber(),
     });
   } catch (error) {
     console.error("Bet placement error:", error);

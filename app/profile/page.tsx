@@ -29,48 +29,50 @@ export default function ProfilePage() {
   return (
     <Shell>
       <div className="mx-auto grid max-w-6xl gap-4 px-4 py-6 lg:grid-cols-[340px_1fr]">
-        <Card>
-          <UserRound className="h-8 w-8 text-electric" />
-          <h1 className="mt-3 text-2xl font-black text-navy">{user?.name ?? "Demo Player"}</h1>
-          <div className="mt-1 text-sm font-semibold text-muted">{user?.phone ?? ""}</div>
-          <div className="mt-3 rounded-full bg-blue-tint px-3 py-2 text-sm font-black text-electric inline-block">
+        <Card glow>
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-electric/10">
+            <UserRound className="h-6 w-6 text-electric" />
+          </div>
+          <h1 className="mt-4 text-2xl font-black text-text-primary">{user?.name ?? "Demo Player"}</h1>
+          <div className="mt-1 text-sm font-semibold text-text-muted">{user?.phone ?? ""}</div>
+          <div className="mt-3 inline-block rounded-full bg-gold/10 px-3 py-2 text-sm font-black text-gold ring-1 ring-gold/20">
             {user?.membershipLevel ?? "SILVER"} {t("profile.vipTier")}
           </div>
-          <div className="mt-4 h-3 rounded-full bg-light-grey">
-            <div className="h-3 w-2/3 rounded-full bg-electric" />
+          <div className="mt-4 h-2 rounded-full bg-white/10">
+            <div className="h-2 w-2/3 rounded-full bg-gradient-to-r from-electric to-gold" />
           </div>
 
           <div className="mt-5 space-y-3">
-            <label className="flex items-center gap-2 text-sm font-bold">
-              <input type="checkbox" defaultChecked={user?.selfExcluded} />
+            <label className="flex items-center gap-2 text-sm font-bold text-text-secondary">
+              <input type="checkbox" defaultChecked={user?.selfExcluded} className="accent-electric" />
               {t("profile.selfExclusion")}
             </label>
-            <label className="block text-sm font-black text-muted">{t("profile.depositLimit")}</label>
+            <label className="block text-sm font-black text-text-muted">{t("profile.depositLimit")}</label>
             <input
               type="number"
-              className="w-full rounded-xl border border-blue-tint px-3 py-3 outline-none focus:ring-2 focus:ring-electric"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-text-primary outline-none transition focus:border-electric/40 focus:ring-2 focus:ring-electric/20 placeholder:text-text-dim"
               placeholder={t("profile.noLimit")}
             />
           </div>
         </Card>
 
         <Card>
-          <h2 className="font-black text-navy">{t("profile.betHistory")}</h2>
+          <h2 className="font-black text-text-primary">{t("profile.betHistory")}</h2>
           {loading ? <SkeletonRow rows={3} /> : (
             <div className="mt-3 space-y-3">
-              {bets.length === 0 && <p className="py-4 text-center text-sm text-muted">No bets yet.</p>}
+              {bets.length === 0 && <p className="py-4 text-center text-sm text-text-muted">No bets yet.</p>}
               {bets.map((bet) => (
-                <div key={bet.id} className="rounded-xl bg-light-grey p-3">
+                <div key={bet.id} className="rounded-xl bg-white/5 border border-white/6 p-3">
                   <div className="flex justify-between font-black">
-                    <span className="text-sm">{bet.id.slice(0, 12)}</span>
-                    <span className={clsx("text-sm capitalize", bet.status === "WON" && "text-win", bet.status === "LOST" && "text-live", bet.status === "PENDING" && "text-electric")}>
+                    <span className="text-sm text-text-primary">{bet.id.slice(0, 12)}</span>
+                    <span className={clsx("text-sm capitalize", bet.status === "WON" && "text-neon-green", bet.status === "LOST" && "text-live", bet.status === "PENDING" && "text-electric")}>
                       {bet.status}
                     </span>
                   </div>
-                  <div className="mt-1 text-sm font-bold text-muted">
+                  <div className="mt-1 text-sm font-bold text-text-muted">
                     {bet.betType} — {bet.items?.length ?? 0} legs — stake {Number(bet.stake).toLocaleString()} ETB — potential {Number(bet.potentialWin).toLocaleString()} ETB
                   </div>
-                  <div className="mt-1 text-xs text-muted">{new Date(bet.createdAt).toLocaleString()}</div>
+                  <div className="mt-1 text-xs text-text-dim">{new Date(bet.createdAt).toLocaleString()}</div>
                 </div>
               ))}
             </div>
