@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import {
-  PromoCarousel,
+  HeroVideoCarousel,
   LiveTicker,
   Card,
   DemoBadge,
@@ -84,9 +84,9 @@ export default function HomePage() {
   return (
     <Shell>
       <div className="mx-auto max-w-7xl px-3 sm:px-4 py-4 space-y-6">
-        {/* 1. Hero Banner Carousel */}
+        {/* 1. Video-Driven Hero Banner Carousel */}
         <section>
-          <PromoCarousel />
+          <HeroVideoCarousel />
         </section>
 
         {/* 2. Quick-Access Game Category Icons Row */}
