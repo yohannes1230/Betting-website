@@ -1,42 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  /* ──── Dark betting-platform palette ──── */
-  --color-bg-deep: #0a0e1a;
-  --color-bg-card: #111827;
-  --color-bg-card-hover: #1a2235;
-  --color-bg-surface: #0f1629;
-  --color-bg-elevated: #1e293b;
+  /* ──── Tipplay Dark Sportsbook Palette ──── */
+  --color-bg-deep: #0B0E11;
+  --color-bg-card: #181C24;
+  --color-bg-card-hover: #202530;
+  --color-bg-surface: #12151C;
+  --color-bg-elevated: #242936;
 
-  /* Neon accents */
-  --color-electric: #00d4ff;
-  --color-electric-hover: #38bdf8;
-  --color-electric-glow: rgba(0, 212, 255, 0.25);
-  --color-gold: #fbbf24;
-  --color-gold-glow: rgba(251, 191, 36, 0.25);
-  --color-neon-green: #22c55e;
-  --color-neon-green-glow: rgba(34, 197, 94, 0.2);
-  --color-live: #ef4444;
-  --color-live-glow: rgba(239, 68, 68, 0.3);
-  --color-win: #22c55e;
-  --color-hot-pink: #f43f5e;
+  /* Tipplay Brand Accents */
+  --color-electric: #00E676;
+  --color-electric-hover: #10B981;
+  --color-electric-glow: rgba(0, 230, 118, 0.25);
+
+  --color-gold: #FFD700;
+  --color-gold-glow: rgba(255, 215, 0, 0.25);
+
+  --color-neon-green: #00E676;
+  --color-neon-green-glow: rgba(0, 230, 118, 0.2);
+
+  --color-live: #FF3B30;
+  --color-live-glow: rgba(255, 59, 48, 0.35);
+
+  --color-win: #00E676;
+  --color-hot-pink: #FF2D55;
 
   /* Text */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
   --color-text-dim: #475569;
 
-  /* Legacy aliases for existing code */
-  --color-navy: #0a0e1a;
-  --color-dark-text: #f1f5f9;
-  --color-muted: #94a3b8;
-  --color-light-grey: #1a2235;
-  --color-blue-tint: #162033;
+  /* Legacy aliases for backward compatibility */
+  --color-navy: #0B0E11;
+  --color-dark-text: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-light-grey: #202530;
+  --color-blue-tint: #141822;
 
-  /* Borders & surfaces */
+  /* Borders & Glows */
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-glow: rgba(0, 212, 255, 0.2);
+  --color-border-glow: rgba(0, 230, 118, 0.25);
 
   --font-family-sans: var(--font-inter), var(--font-noto-ethiopic), system-ui, -apple-system, sans-serif;
 }
