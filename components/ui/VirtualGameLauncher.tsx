@@ -11,6 +11,7 @@ export type VirtualGameInfo = {
   category: string;
   icon: string;
   description: string;
+  coverImage?: string;
   providerPending?: boolean;
 };
 
