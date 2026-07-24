@@ -6,3 +6,5 @@ export { LiveBadge } from "./LiveBadge";
 export { PromoBanner } from "./PromoBanner";
 export { SkeletonRow, SkeletonCard } from "./SkeletonRow";
 export { TeamLogo } from "./TeamLogo";
+export { TipplayLogo } from "./TipplayLogo";
+

@@ -18,10 +18,10 @@ const notoEthiopic = Noto_Sans_Ethiopic({
 });
 
 export const metadata: Metadata = {
-  title: "AddisBet — Ethiopia's Premier Betting Platform",
+  title: "Tipplay — Premier Sportsbook, Casino & Virtual Games",
   description:
-    "Demo-only Ethiopia-focused sportsbook and virtual games. Live odds, bet slip, wallet, Keno, Aviator-style crash, virtual football, and admin controls. አዲስቤት — ለኢትዮጵያ የተዘጋጀ የስፖርት ቤት",
-  keywords: "betting, Ethiopia, sportsbook, demo, Keno, Aviator, virtual football, አዲስቤት, ቤቲንግ",
+    "Ethiopia's premier sportsbook, crash games & virtual casino platform. Live odds, instant tickets, virtual football, Aviator-style crash, Keno & Jackpots. ቲፕፕሌይ — ለኢትዮጵያ የተዘጋጀ መሪ የቤቲንግ መድረክ",
+  keywords: "Tipplay, sports betting, Ethiopia sportsbook, live odds, virtual games, Aviator, Keno, casino, ቲፕፕሌይ, ቤቲንግ",
 };
 
 export default function RootLayout({
