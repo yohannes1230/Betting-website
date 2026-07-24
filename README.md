@@ -8,7 +8,8 @@
 - **Crash Games**: Aviator-style real-time multiplier flight simulation.
 - **Casino & Slots**: Pragmatic-style demo slots and Keno draw games.
 - **Localization**: English and Amharic (አማርኛ) support.
-- **Mobile-First UX**: Sticky bet slip, bottom navigation bar, hero promotional carousel, and live odds ticker.
+- **Mobile-First UX**: Sticky bet slip, bottom navigation bar, video-driven hero carousel (`<HeroVideoCarousel />`), and live odds ticker.
+- **Hero Video Handoff**: See `docs/HERO_VIDEOS.md` for video rendering, MP4/WebM compression (<2.5MB), and safe zone overlay guidelines.
 
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript

@@ -10,6 +10,8 @@ export { TipplayLogo } from "./TipplayLogo";
 export { PromoCarousel } from "./PromoCarousel";
 export { LiveTicker } from "./LiveTicker";
 export { SplashIntro } from "./SplashIntro";
+export { HeroVideoCarousel } from "./HeroVideoCarousel";
+
 
 
 
