@@ -1,31 +1,33 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  ShieldCheck,
-  Activity,
-  Dice5,
-  BarChart3,
-  ChevronRight,
   Trophy,
-  Plane,
-  TrendingUp,
-  Users,
+  Activity,
+  Gamepad2,
+  Dice5,
+  Flame,
+  Award,
+  ChevronRight,
+  ShieldCheck,
   Zap,
+  Star,
+  Sparkles,
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import {
-  Button,
+  PromoCarousel,
+  LiveTicker,
   Card,
   DemoBadge,
   LiveBadge,
-  PromoBanner,
   SkeletonRow,
   TeamLogo,
 } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
-import { useEffect, useState } from "react";
+import { useBetSlipStore, SlipItem } from "@/lib/store";
 
 type MatchData = {
   id: string;
@@ -40,28 +42,6 @@ type MatchData = {
   odds: Array<{ id: string; marketName: string; selection: string; value: number }>;
 };
 
-/* ─── Animated floating particles in hero ─── */
-function HeroParticles() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full bg-electric/10"
-          style={{
-            width: `${20 + i * 15}px`,
-            height: `${20 + i * 15}px`,
-            left: `${10 + i * 15}%`,
-            top: `${20 + (i % 3) * 25}%`,
-            animation: `float ${3 + i * 0.5}s ease-in-out ${i * 0.3}s infinite`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* ─── League emojis ─── */
 const LEAGUE_ICONS: Record<string, string> = {
   "Ethiopian Premier League": "🇪🇹",
   "English Premier League": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -72,235 +52,348 @@ const LEAGUE_ICONS: Record<string, string> = {
 
 export default function HomePage() {
   const { t } = useI18n();
+  const { slip, addSelection } = useBetSlipStore();
   const [matches, setMatches] = useState<MatchData[]>([]);
+  const [selectedLeague, setSelectedLeague] = useState<string>("All");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/matches?live=true")
+    fetch("/api/matches")
       .then((r) => r.json())
       .then((data) => {
-        setMatches(Array.isArray(data) ? data.slice(0, 4) : []);
+        setMatches(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
+  const liveMatches = matches.filter((m) => m.isLive);
+  const featuredMatches = selectedLeague === "All"
+    ? matches
+    : matches.filter((m) => m.league === selectedLeague);
+
+  const quickCategories = [
+    { label: "Sports", icon: Trophy, href: "/sports", badge: "Live", color: "from-[#00E676]/20 to-emerald-600/10 text-[#00E676]" },
+    { label: "Live Betting", icon: Activity, href: "/sports?live=true", badge: "HOT", color: "from-red-500/20 to-rose-600/10 text-live" },
+    { label: "Virtual Games", icon: Gamepad2, href: "/virtual-games", badge: "NEW", color: "from-blue-500/20 to-cyan-600/10 text-cyan-400" },
+    { label: "Casino & Slots", icon: Dice5, href: "/games", badge: "Popular", color: "from-purple-500/20 to-indigo-600/10 text-purple-400" },
+    { label: "Crash Games", icon: Flame, href: "/games/aviator", badge: "100x", color: "from-amber-500/20 to-yellow-600/10 text-gold" },
+    { label: "Jackpots", icon: Award, href: "/games#jackpot", badge: "500K", color: "from-emerald-500/20 to-teal-600/10 text-[#00E676]" },
+  ];
+
   return (
     <Shell>
-      {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden mesh-gradient">
-        <HeroParticles />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-[1fr_430px] lg:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col justify-center"
-          >
-            <DemoBadge />
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[1.1] md:text-6xl">
-              <span className="gradient-text">{t("hero.titleHighlight")}</span>
-              <br />
-              <span className="text-text-primary">{t("hero.title")}</span>
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg font-medium text-text-secondary">
-              {t("hero.subtitle")}
-            </p>
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 py-4 space-y-6">
+        {/* 1. Hero Banner Carousel */}
+        <section>
+          <PromoCarousel />
+        </section>
 
-            {/* CTA Buttons */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/register">
-                <Button variant="gold" className="text-base">
-                  <Zap className="h-4 w-4" />
-                  {t("hero.cta")}
-                </Button>
-              </Link>
-              <Link href="/sports">
-                <Button variant="ghost">{t("hero.browse")}</Button>
-              </Link>
-            </div>
-
-            {/* Stats row */}
-            <div className="mt-8 flex gap-8">
-              {[
-                { icon: Users, value: t("hero.stat1"), label: t("hero.stat1Label") },
-                { icon: Trophy, value: t("hero.stat2"), label: t("hero.stat2Label") },
-                { icon: TrendingUp, value: t("hero.stat3"), label: t("hero.stat3Label") },
-              ].map(({ icon: Icon, value, label }) => (
-                <div key={label} className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5">
-                    <Icon className="h-4 w-4 text-electric" />
+        {/* 2. Quick-Access Game Category Icons Row */}
+        <section>
+          <div className="no-scrollbar flex gap-2.5 overflow-x-auto py-1">
+            {quickCategories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <Link
+                  key={cat.label}
+                  href={cat.href}
+                  className={`group shrink-0 flex items-center gap-3 rounded-2xl bg-gradient-to-r ${cat.color} bg-[#181C24] p-3 border border-white/8 hover:border-white/20 transition shadow-lg min-w-[155px]`}
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:scale-110 transition">
+                    <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <div className="text-lg font-black text-text-primary">{value}</div>
-                    <div className="text-xs font-medium text-text-muted">{label}</div>
+                    <div className="text-xs font-black text-white group-hover:text-electric transition">
+                      {cat.label}
+                    </div>
+                    {cat.badge && (
+                      <span className="text-[9px] font-black uppercase tracking-wider text-text-muted">
+                        {cat.badge}
+                      </span>
+                    )}
                   </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
-          {/* ─── Live matches preview card ─── */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-card rounded-2xl p-5"
-          >
-            <div className="flex items-center justify-between px-1 pb-4">
-              <span className="text-sm font-black text-text-primary">{t("sports.featuredMatches")}</span>
-              <LiveBadge />
+        {/* 3. Live Now Ticker Strip */}
+        <section>
+          <LiveTicker matches={liveMatches} loading={loading} />
+        </section>
+
+        {/* 4. Main Sportsbook Grid with Sidebar Filters */}
+        <section className="grid gap-6 lg:grid-cols-[240px_1fr]">
+          {/* Left Category Sidebar (Desktop) & Filter Chips (Mobile) */}
+          <aside className="space-y-4">
+            <div className="rounded-2xl bg-[#181C24] border border-white/8 p-3 shadow-lg">
+              <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-text-muted px-2 py-1 mb-2">
+                <Star className="h-3.5 w-3.5 text-gold" /> Pinned Leagues
+              </div>
+
+              <div className="no-scrollbar flex lg:flex-col gap-1.5 overflow-x-auto">
+                <button
+                  onClick={() => setSelectedLeague("All")}
+                  className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
+                    selectedLeague === "All"
+                      ? "bg-[#00E676] text-black font-black"
+                      : "text-text-secondary hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>🔥</span>
+                    <span>All Leagues</span>
+                  </span>
+                  <span className="text-[10px] font-mono opacity-80">{matches.length}</span>
+                </button>
+
+                {/* Pinned Ethiopian Premier League */}
+                <button
+                  onClick={() => setSelectedLeague("Ethiopian Premier League")}
+                  className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
+                    selectedLeague === "Ethiopian Premier League"
+                      ? "bg-[#00E676] text-black font-black"
+                      : "text-[#00E676] bg-[#00E676]/10 border border-[#00E676]/30 hover:bg-[#00E676]/20"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>🇪🇹</span>
+                    <span className="font-extrabold">Ethiopia Premier</span>
+                  </span>
+                  <span className="rounded bg-gold px-1 py-0.2 text-[9px] text-black font-black uppercase">
+                    HOT
+                  </span>
+                </button>
+
+                {["English Premier League", "La Liga", "CAF Champions League", "Serie A"].map((league) => (
+                  <button
+                    key={league}
+                    onClick={() => setSelectedLeague(league)}
+                    className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
+                      selectedLeague === league
+                        ? "bg-[#00E676] text-black font-black"
+                        : "text-text-secondary hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span>{LEAGUE_ICONS[league] || "⚽"}</span>
+                      <span>{league}</span>
+                    </span>
+                    <span className="text-[10px] font-mono opacity-80">
+                      {matches.filter((m) => m.league === league).length}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
+          </aside>
+
+          {/* Center Featured Matches Grid */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-electric" />
+                Featured Matches ({featuredMatches.length})
+              </h3>
+              <Link href="/sports" className="text-xs font-bold text-electric hover:underline flex items-center gap-0.5">
+                View Sportsbook <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+
             {loading ? (
-              <SkeletonRow rows={2} />
-            ) : matches.length === 0 ? (
-              <p className="py-8 text-center text-sm font-semibold text-text-muted">
-                {t("sports.noLive")}
-              </p>
+              <SkeletonRow rows={3} />
+            ) : featuredMatches.length === 0 ? (
+              <div className="rounded-2xl bg-[#181C24] p-8 text-center text-xs font-semibold text-text-muted">
+                No matches available for this league.
+              </div>
             ) : (
               <div className="space-y-3">
-                {matches.map((m) => (
-                  <Link
+                {featuredMatches.slice(0, 5).map((m) => (
+                  <div
                     key={m.id}
-                    href={`/sports/match/${m.id}`}
-                    className="group block rounded-xl bg-white/5 p-3.5 transition hover:bg-white/8 neon-border"
+                    className="group rounded-2xl bg-[#181C24] border border-white/8 p-4 shadow-lg hover:border-electric/30 transition"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col items-center gap-2 w-8 shrink-0">
-                        <TeamLogo name={m.homeTeam} size="sm" />
-                        <TeamLogo name={m.awayTeam} size="sm" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between text-sm font-black text-text-primary truncate group-hover:text-electric transition">
-                          <span>{m.homeTeam}</span>
-                          {m.isLive && <span className="text-gold tabular">{m.homeScore ?? 0}</span>}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col items-center gap-1.5 shrink-0">
+                          <TeamLogo name={m.homeTeam} size="sm" />
+                          <TeamLogo name={m.awayTeam} size="sm" />
                         </div>
-                        <div className="flex items-center justify-between text-sm font-black text-text-primary mt-1 truncate group-hover:text-electric transition">
-                          <span>{m.awayTeam}</span>
-                          {m.isLive && <span className="text-gold tabular">{m.awayScore ?? 0}</span>}
-                        </div>
-                        <div className="mt-2 text-[10px] font-bold text-text-muted flex items-center gap-1">
-                          <span className="text-electric">{LEAGUE_ICONS[m.league] || "⚽"} {m.league}</span>
-                          <span className="text-white/20">•</span>
-                          {m.isLive ? <span className="text-live">{m.minute}'</span> : <span>{new Date(m.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      {m.odds
-                        .filter((o) => o.marketName === "Match Result")
-                        .slice(0, 3)
-                        .map((o) => (
-                          <div
-                            key={o.id}
-                            className="flex-1 rounded-lg bg-bg-elevated px-2 py-2 flex items-center justify-between text-xs font-black transition hover:bg-electric hover:text-white"
-                          >
-                            <span className="text-text-muted">{o.selection}</span>
-                            <span className="text-electric group-hover:text-current">{Number(o.value).toFixed(2)}</span>
+
+                        <div>
+                          <div className="text-xs font-bold text-electric flex items-center gap-1">
+                            <span>{LEAGUE_ICONS[m.league] || "⚽"}</span>
+                            <span>{m.league}</span>
+                            {m.isLive ? (
+                              <span className="ml-2 flex items-center gap-1 text-[10px] font-black text-live bg-live/10 px-1.5 py-0.5 rounded">
+                                <Activity className="h-3 w-3 animate-pulse" /> {m.minute}'
+                              </span>
+                            ) : (
+                              <span className="ml-2 text-[10px] text-text-muted">
+                                {new Date(m.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            )}
                           </div>
-                        ))}
+
+                          <div className="mt-1 text-sm font-black text-white group-hover:text-electric transition flex items-center gap-3">
+                            <span>{m.homeTeam}</span>
+                            <span className="text-text-muted">vs</span>
+                            <span>{m.awayTeam}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quick Odds Buttons Grid */}
+                      <div className="flex items-center gap-2 sm:w-auto w-full">
+                        {m.odds
+                          .filter((o) => o.marketName === "Match Result")
+                          .slice(0, 3)
+                          .map((o) => {
+                            const isSelected = slip.some((s) => s.oddsId === o.id);
+
+                            const handleSelect = () => {
+                              const item: SlipItem = {
+                                oddsId: o.id,
+                                matchId: m.id,
+                                marketName: o.marketName,
+                                selection: o.selection,
+                                value: o.value,
+                                homeTeam: m.homeTeam,
+                                awayTeam: m.awayTeam,
+                                league: m.league,
+                              };
+                              addSelection(item);
+                            };
+
+                            return (
+                              <button
+                                key={o.id}
+                                onClick={handleSelect}
+                                className={`flex-1 sm:w-20 rounded-xl px-3 py-2 flex flex-col items-center justify-center text-xs font-black transition ${
+                                  isSelected
+                                    ? "bg-[#00E676] text-black shadow-lg shadow-electric/30 font-black scale-105"
+                                    : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-white"
+                                }`}
+                              >
+                                <span className="text-[10px] text-text-muted uppercase">{o.selection}</span>
+                                <span className="font-mono text-electric group-hover:text-white tabular">
+                                  {Number(o.value).toFixed(2)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                      </div>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}
+          </div>
+        </section>
+
+        {/* 5. Virtual Games Lobby Preview */}
+        <section className="rounded-3xl bg-gradient-to-r from-blue-950/40 via-[#181C24] to-[#12151C] border border-white/10 p-5 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="rounded bg-cyan-400 text-black px-2 py-0.5 text-[9px] font-black uppercase tracking-wider">
+                VIRTUAL SPORTS
+              </span>
+              <h3 className="text-lg font-black text-white mt-1">24/7 Virtual Games Lobby</h3>
+            </div>
             <Link
-              href="/sports"
-              className="mt-4 flex items-center justify-center gap-1 text-sm font-bold text-electric transition hover:text-electric-hover"
+              href="/virtual-games"
+              className="rounded-xl bg-cyan-500/20 text-cyan-400 px-4 py-2 text-xs font-black hover:bg-cyan-500/30 transition flex items-center gap-1"
             >
-              View all matches <ChevronRight className="h-4 w-4" />
+              Explore All 20 Virtuals <ChevronRight className="h-4 w-4" />
             </Link>
-          </motion.div>
-        </div>
-      </section>
+          </div>
 
-      {/* ═══════════ Promo Banners ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-6">
-        <PromoBanner />
-      </section>
-
-      {/* ═══════════ League carousel ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-4">
-        <div className="no-scrollbar flex gap-3 overflow-x-auto">
-          {["Ethiopian Premier League", "English Premier League", "La Liga", "CAF Champions League", "Serie A"].map((league) => (
-            <Link
-              key={league}
-              href={`/sports?league=${encodeURIComponent(league)}`}
-              className="group min-w-56 rounded-2xl bg-bg-card p-4 border border-white/6 transition hover:border-electric/30 hover:shadow-lg hover:shadow-electric/5"
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="text-2xl">{LEAGUE_ICONS[league] || "⚽"}</span>
-                <div className="font-black text-text-primary">{league}</div>
-              </div>
-              <div className="mt-2 text-sm font-bold text-electric">
-                {matches.filter((m) => m.league === league).length} {t("leagues.matches")}
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ Quick Game Links ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-4">
-        <div className="grid gap-3 md:grid-cols-3">
-          {[
-            {
-              icon: Trophy,
-              title: t("games.virtualFootball"),
-              href: "/games/virtual-football",
-              gradient: "from-emerald-500/20 to-green-600/10",
-              iconClass: "text-neon-green animate-bounce-ball",
-            },
-            {
-              icon: Plane,
-              title: t("games.aviator"),
-              href: "/games/aviator",
-              gradient: "from-cyan-500/20 to-blue-600/10",
-              iconClass: "text-electric animate-plane-fly",
-            },
-            {
-              icon: Dice5,
-              title: t("games.keno"),
-              href: "/games/keno",
-              gradient: "from-amber-500/20 to-yellow-600/10",
-              iconClass: "text-gold animate-dice-roll",
-            },
-          ].map(({ icon: Icon, title, href, gradient, iconClass }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`group flex items-center gap-4 rounded-2xl bg-gradient-to-r ${gradient} bg-bg-card p-5 border border-white/6 transition hover:border-white/15 hover:shadow-lg`}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10">
-                <Icon className={`h-6 w-6 ${iconClass}`} />
-              </div>
-              <div className="flex-1">
-                <div className="font-black text-text-primary">{title}</div>
-                <div className="text-xs font-bold text-electric opacity-0 transition group-hover:opacity-100">
-                  {t("games.playNow")} →
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { name: "Virtual Football League", desc: "AI-simulated matches every 75s", icon: "⚽", badge: "POPULAR" },
+              { name: "Virtual Champions Cup", desc: "Knockout tournament mode", icon: "🏆", badge: "NEW" },
+              { name: "Virtual Greyhound Racing", desc: "Fast-paced track racing", icon: "🐕", badge: "HOT" },
+              { name: "Rocket Crash", desc: "Multiplier rocket launch", icon: "🚀", badge: "HIGH MULTI" },
+            ].map((vGame) => (
+              <Link
+                key={vGame.name}
+                href="/virtual-games"
+                className="group rounded-2xl bg-[#181C24] border border-white/8 p-4 hover:border-cyan-400/40 transition shadow-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl">{vGame.icon}</span>
+                    <span className="rounded bg-white/5 px-2 py-0.5 text-[9px] font-black text-cyan-400">
+                      {vGame.badge}
+                    </span>
+                  </div>
+                  <h4 className="mt-3 text-sm font-black text-white group-hover:text-cyan-400 transition">
+                    {vGame.name}
+                  </h4>
+                  <p className="mt-1 text-xs text-text-muted">{vGame.desc}</p>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+                <div className="mt-4 flex items-center justify-end text-xs font-black text-cyan-400">
+                  Play Demo →
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-      {/* ═══════════ Feature cards ═══════════ */}
-      <section className="mx-auto max-w-7xl px-4 py-6 pb-10">
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            { icon: ShieldCheck, title: t("features.safe"), desc: t("features.safeDesc"), color: "text-neon-green" },
-            { icon: Activity, title: t("features.live"), desc: t("features.liveDesc"), color: "text-live" },
-            { icon: Dice5, title: t("features.games"), desc: t("features.gamesDesc"), color: "text-gold" },
-          ].map(({ icon: Icon, title, desc, color }) => (
-            <Card key={title} glow>
-              <Icon className={`h-6 w-6 ${color}`} />
-              <h3 className="mt-3 font-black text-text-primary">{title}</h3>
-              <p className="mt-1 text-sm font-semibold text-text-muted">{desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
+        {/* 6. Casino & Slots Preview */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+              <Dice5 className="h-4 w-4 text-purple-400" />
+              Casino & Slots Spotlight
+            </h3>
+            <Link href="/games" className="text-xs font-bold text-purple-400 hover:underline flex items-center gap-0.5">
+              View All Games <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { title: "Aviator Crash Game", subtitle: "Fly high & cash out before crash", icon: Flame, href: "/games/aviator", color: "from-amber-500/20 to-red-600/10 text-gold" },
+              { title: "Fast Keno & Lucky Numbers", subtitle: "Instant draw numbers up to 10,000x", icon: Dice5, href: "/games/keno", color: "from-purple-500/20 to-pink-600/10 text-purple-400" },
+              { title: "Sweet Bonanza & Slots", subtitle: "Tumbling reels with scatter multipliers", icon: Sparkles, href: "/games", color: "from-emerald-500/20 to-teal-600/10 text-[#00E676]" },
+            ].map((casino) => {
+              const Icon = casino.icon;
+              return (
+                <Link
+                  key={casino.title}
+                  href={casino.href}
+                  className={`group rounded-2xl bg-gradient-to-r ${casino.color} bg-[#181C24] p-5 border border-white/8 hover:border-white/20 transition shadow-xl`}
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:scale-110 transition">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h4 className="mt-4 text-base font-black text-white group-hover:text-electric transition">
+                    {casino.title}
+                  </h4>
+                  <p className="mt-1 text-xs font-semibold text-text-muted">{casino.subtitle}</p>
+                  <div className="mt-4 flex items-center justify-end text-xs font-black text-electric">
+                    Play Now →
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 7. Responsible Gaming & Trust Banner */}
+        <section className="rounded-2xl bg-[#181C24] border border-white/8 p-6 text-center space-y-2">
+          <div className="flex justify-center">
+            <ShieldCheck className="h-8 w-8 text-[#00E676]" />
+          </div>
+          <h4 className="text-sm font-black text-white">Safe, Licensed & Responsible Sports Betting</h4>
+          <p className="text-xs text-text-muted max-w-xl mx-auto">
+            Tipplay operates in full compliance with local regulatory guidelines. Betting should be fun and entertaining — set limits and play responsibly. 18+ Only.
+          </p>
+        </section>
+      </div>
     </Shell>
   );
 }
