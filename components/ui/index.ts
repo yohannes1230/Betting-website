@@ -9,5 +9,7 @@ export { TeamLogo } from "./TeamLogo";
 export { TipplayLogo } from "./TipplayLogo";
 export { PromoCarousel } from "./PromoCarousel";
 export { LiveTicker } from "./LiveTicker";
+export { SplashIntro } from "./SplashIntro";
+
 
 

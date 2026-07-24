@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { TipplayLogo } from "@/components/ui/TipplayLogo";
 import { DemoBadge } from "@/components/ui/DemoBadge";
+import { SplashIntro } from "@/components/ui/SplashIntro";
 import { useI18n } from "@/lib/i18n";
 import { useBetSlipStore } from "@/lib/store";
 
@@ -166,6 +167,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-bg-deep text-text-primary pb-16 md:pb-0">
+      <SplashIntro />
+
       {/* ───── Top Navigation Header ───── */}
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${

@@ -49,17 +49,17 @@ export function OddsButton({ odd, match }: OddsButtonProps) {
     <button
       onClick={handleClick}
       className={clsx(
-        "flex min-h-12 items-center justify-between rounded-xl px-3 py-2 text-sm font-black transition-all duration-200",
+        "flex min-h-12 items-center justify-between rounded-xl px-3 py-2 text-xs sm:text-sm font-black transition-all duration-150 transform active:scale-95",
         selected
-          ? "bg-electric/15 text-electric ring-1 ring-electric/40 shadow-lg shadow-electric/10"
+          ? "bg-[#00E676] text-black shadow-lg shadow-electric/30 font-black scale-[1.02]"
           : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary border border-white/6",
-        flash === "up" && "!bg-neon-green/15 !text-neon-green",
-        flash === "down" && "!bg-live/15 !text-live",
+        flash === "up" && "!bg-[#00E676]/30 !text-[#00E676] animate-pulse",
+        flash === "down" && "!bg-live/30 !text-live animate-pulse",
       )}
       style={{ fontVariantNumeric: "tabular-nums" }}
     >
-      <span className="truncate text-left">{odd.selection}</span>
-      <span>{value.toFixed(2)}</span>
+      <span className="truncate text-left text-xs opacity-90">{odd.selection}</span>
+      <span className="font-mono text-electric group-hover:text-white tabular font-extrabold">{value.toFixed(2)}</span>
     </button>
   );
 }
