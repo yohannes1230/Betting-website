@@ -21,7 +21,9 @@ type MatchData = {
 };
 
 const LEAGUE_ICONS: Record<string, string> = {
+  "Ethiopia": "🇪🇹",
   "EPL": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+  "English Premier": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
   "La Liga": "🇪🇸",
   "Serie A": "🇮🇹",
   "Bundesliga": "🇩🇪",
@@ -88,7 +90,7 @@ function SportsContent() {
     <>
       <div className="mx-auto grid max-w-[1400px] gap-4 px-4 py-5 lg:grid-cols-[240px_1fr_320px]">
         {/* Left Sidebar - Navigation (Desktop only, mobile will use chips) */}
-        <aside className="hidden lg:flex flex-col gap-4">
+        <aside className="hidden lg:flex flex-col gap-4 sticky top-20 max-h-[calc(100vh-6rem)]">
           <Card className="p-3">
             <h3 className="mb-2 px-3 text-xs font-black uppercase text-text-muted">Sports</h3>
             <div className="flex flex-col gap-1 mb-4 border-b border-white/5 pb-2">

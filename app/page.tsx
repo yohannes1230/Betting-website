@@ -15,6 +15,7 @@ import {
   Zap,
   Star,
   Sparkles,
+  Play,
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import {
@@ -47,7 +48,38 @@ const LEAGUE_ICONS: Record<string, string> = {
   "English Premier League": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
   "La Liga": "🇪🇸",
   "CAF Champions League": "🌍",
+  "UEFA Champions League": "🏆",
+  "UEFA Europa League": "🏆",
   "Serie A": "🇮🇹",
+  "Bundesliga": "🇩🇪",
+  "Ligue 1": "🇫🇷",
+  "Primeira Liga": "🇵🇹",
+  "Eredivisie": "🇳🇱",
+  "Süper Lig": "🇹🇷",
+  "Belgian Pro League": "🇧🇪",
+  "Scottish Premiership": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+  "Swiss Super League": "🇨🇭",
+  "MLS": "🇺🇸",
+  "Brasileirão Série A": "🇧🇷",
+  "Argentine Primera": "🇦🇷",
+  "Liga MX": "🇲🇽",
+  "A-League": "🇦🇺",
+  "J-League": "🇯🇵",
+  "K-League": "🇰🇷",
+  "League of Ireland": "🇮🇪",
+  "Copa Libertadores": "🌎",
+  "Copa Sudamericana": "🌎",
+  "Saudi Pro League": "🇸🇦",
+  "Danish Superliga": "🇩🇰",
+  "Allsvenskan": "🇸🇪",
+  "Eliteserien": "🇳🇴",
+  "Veikkausliiga": "🇫🇮",
+  "Ekstraklasa": "🇵🇱",
+  "Greek Super League": "🇬🇷",
+  "Austrian Bundesliga": "🇦🇹",
+  "Czech First League": "🇨🇿",
+  "Croatian HNL": "🇭🇷",
+  "Chinese Super League": "🇨🇳",
 };
 
 export default function HomePage() {
@@ -71,6 +103,29 @@ export default function HomePage() {
   const featuredMatches = selectedLeague === "All"
     ? matches
     : matches.filter((m) => m.league === selectedLeague);
+
+  const defaultLeagues = [
+    "English Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1",
+    "UEFA Champions League", "UEFA Europa League", "CAF Champions League",
+    "Primeira Liga", "Eredivisie", "Süper Lig", "Belgian Pro League",
+    "Scottish Premiership", "Swiss Super League", "MLS",
+    "Brasileirão Série A", "Argentine Primera", "Liga MX",
+    "A-League", "J-League", "K-League", "Saudi Pro League",
+    "Copa Libertadores", "Copa Sudamericana", "League of Ireland",
+    "Danish Superliga", "Allsvenskan", "Eliteserien", "Veikkausliiga",
+    "Ekstraklasa", "Greek Super League", "Austrian Bundesliga",
+    "Czech First League", "Croatian HNL", "Chinese Super League",
+  ];
+  const dynamicLeagues = Array.from(new Set(matches.map((m) => m.league)))
+    .filter((l) => l && l !== "Ethiopian Premier League" && !defaultLeagues.includes(l))
+    .sort();
+  const leaguesList = [...defaultLeagues, ...dynamicLeagues];
+
+  // Pre-compute match counts per league for sidebar badges
+  const leagueMatchCounts = new Map<string, number>();
+  matches.forEach((m) => {
+    leagueMatchCounts.set(m.league, (leagueMatchCounts.get(m.league) || 0) + 1);
+  });
 
   const quickCategories = [
     { label: "Sports", icon: Trophy, href: "/sports", badge: "Live", color: "from-[#00E676]/20 to-emerald-600/10 text-[#00E676]" },
@@ -125,67 +180,82 @@ export default function HomePage() {
         </section>
 
         {/* 4. Main Sportsbook Grid with Sidebar Filters */}
-        <section className="grid gap-6 lg:grid-cols-[240px_1fr]">
-          {/* Left Category Sidebar (Desktop) & Filter Chips (Mobile) */}
-          <aside className="space-y-4">
-            <div className="rounded-2xl bg-[#181C24] border border-white/8 p-3 shadow-lg">
-              <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-text-muted px-2 py-1 mb-2">
-                <Star className="h-3.5 w-3.5 text-gold" /> Pinned Leagues
+        <section className="grid gap-6 lg:grid-cols-[240px_1fr] items-start">
+          {/* Left Category Sidebar — sticky, scrollable, stretches to viewport */}
+          <aside className="lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)]">
+            <div className="rounded-2xl bg-[#181C24] border border-white/8 p-3 shadow-lg flex flex-col lg:max-h-[calc(100vh-6rem)]">
+              {/* Header — fixed at top */}
+              <div className="flex items-center justify-between px-2 py-1.5 mb-2 border-b border-white/5 pb-2 shrink-0">
+                <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-text-muted">
+                  <Star className="h-3.5 w-3.5 text-gold" /> Leagues
+                </div>
+                <span className="text-[10px] font-mono font-bold text-electric bg-electric/10 px-2 py-0.5 rounded border border-electric/20">
+                  {matches.length} total
+                </span>
               </div>
 
-              <div className="no-scrollbar flex lg:flex-col gap-1.5 overflow-x-auto">
+              {/* Scrollable leagues list — visible thin scrollbar */}
+              <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto flex-1 min-h-0 pr-1 thin-scrollbar">
                 <button
                   onClick={() => setSelectedLeague("All")}
-                  className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
+                  className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition shrink-0 w-full ${
                     selectedLeague === "All"
-                      ? "bg-[#00E676] text-black font-black"
-                      : "text-text-secondary hover:bg-white/5 hover:text-white"
+                      ? "bg-[#00E676] text-black font-black shadow-md shadow-emerald-500/20"
+                      : "text-text-secondary hover:bg-white/6 hover:text-white"
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>🔥</span>
                     <span>All Leagues</span>
                   </span>
-                  <span className="text-[10px] font-mono opacity-80">{matches.length}</span>
+                  <span className="text-[10px] font-mono opacity-70 bg-white/10 px-1.5 py-0.5 rounded">{matches.length}</span>
                 </button>
 
                 {/* Pinned Ethiopian Premier League */}
                 <button
                   onClick={() => setSelectedLeague("Ethiopian Premier League")}
-                  className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
+                  className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition shrink-0 w-full ${
                     selectedLeague === "Ethiopian Premier League"
-                      ? "bg-[#00E676] text-black font-black"
-                      : "text-[#00E676] bg-[#00E676]/10 border border-[#00E676]/30 hover:bg-[#00E676]/20"
+                      ? "bg-[#00E676] text-black font-black shadow-md shadow-emerald-500/20"
+                      : "text-[#00E676] bg-[#00E676]/8 border border-[#00E676]/20 hover:bg-[#00E676]/15"
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>🇪🇹</span>
                     <span className="font-extrabold">Ethiopia Premier</span>
                   </span>
-                  <span className="rounded bg-gold px-1 py-0.2 text-[9px] text-black font-black uppercase">
+                  <span className="rounded bg-gold/90 px-1.5 py-0.5 text-[9px] text-black font-black uppercase">
                     HOT
                   </span>
                 </button>
 
-                {["English Premier League", "La Liga", "CAF Champions League", "Serie A"].map((league) => (
-                  <button
-                    key={league}
-                    onClick={() => setSelectedLeague(league)}
-                    className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition shrink-0 ${
-                      selectedLeague === league
-                        ? "bg-[#00E676] text-black font-black"
-                        : "text-text-secondary hover:bg-white/5 hover:text-white"
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span>{LEAGUE_ICONS[league] || "⚽"}</span>
-                      <span>{league}</span>
-                    </span>
-                    <span className="text-[10px] font-mono opacity-80">
-                      {matches.filter((m) => m.league === league).length}
-                    </span>
-                  </button>
-                ))}
+                {/* Separator */}
+                <div className="hidden lg:block border-t border-white/5 my-1 shrink-0" />
+
+                {leaguesList.map((league) => {
+                  const matchCount = leagueMatchCounts.get(league) || 0;
+                  return (
+                    <button
+                      key={league}
+                      onClick={() => setSelectedLeague(league)}
+                      className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition shrink-0 w-full ${
+                        selectedLeague === league
+                          ? "bg-[#00E676] text-black font-black shadow-md shadow-emerald-500/20"
+                          : "text-text-secondary hover:bg-white/6 hover:text-white"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2 truncate pr-1">
+                        <span>{LEAGUE_ICONS[league] || "⚽"}</span>
+                        <span className="truncate">{league}</span>
+                      </span>
+                      {matchCount > 0 && (
+                        <span className="text-[10px] font-mono opacity-70 bg-white/10 px-1.5 py-0.5 rounded shrink-0">
+                          {matchCount}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </aside>
@@ -210,7 +280,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {featuredMatches.slice(0, 5).map((m) => (
+                {featuredMatches.slice(0, 15).map((m) => (
                   <div
                     key={m.id}
                     className="group rounded-2xl bg-[#181C24] border border-white/8 p-4 shadow-lg hover:border-electric/30 transition"
@@ -300,42 +370,142 @@ export default function HomePage() {
               <span className="rounded bg-cyan-400 text-black px-2 py-0.5 text-[9px] font-black uppercase tracking-wider">
                 VIRTUAL SPORTS
               </span>
-              <h3 className="text-lg font-black text-white mt-1">24/7 Virtual Games Lobby</h3>
+              <h3 className="text-lg font-black text-white mt-1 flex items-center gap-2">
+                <Gamepad2 className="h-5 w-5 text-cyan-400" />
+                24/7 Virtual Games Lobby
+              </h3>
             </div>
             <Link
               href="/virtual-games"
-              className="rounded-xl bg-cyan-500/20 text-cyan-400 px-4 py-2 text-xs font-black hover:bg-cyan-500/30 transition flex items-center gap-1"
+              className="rounded-xl bg-cyan-500/20 text-cyan-400 px-4 py-2 text-xs font-black hover:bg-cyan-500/30 transition flex items-center gap-1 border border-cyan-500/30"
             >
               Explore All 20 Virtuals <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { name: "Virtual Football League", desc: "AI-simulated matches every 75s", icon: "⚽", badge: "POPULAR" },
-              { name: "Virtual Champions Cup", desc: "Knockout tournament mode", icon: "🏆", badge: "NEW" },
-              { name: "Virtual Greyhound Racing", desc: "Fast-paced track racing", icon: "🐕", badge: "HOT" },
-              { name: "Rocket Crash", desc: "Multiplier rocket launch", icon: "🚀", badge: "HIGH MULTI" },
+              {
+                id: "v-football-league",
+                name: "Virtual Football League",
+                desc: "AI-simulated 90m matches in 75s with 3D highlights",
+                category: "Football",
+                badge: "POPULAR",
+                badgeColor: "bg-cyan-400 text-black",
+                coverImage: "/images/virtuals/v-football-league.png",
+                href: "/virtual-games",
+                multi: "3D MATCHES",
+              },
+              {
+                id: "v-champions-cup",
+                name: "Virtual Champions Cup",
+                desc: "Knockout stage tournament mode with instant payouts",
+                category: "Tournament",
+                badge: "NEW",
+                badgeColor: "bg-gold text-black",
+                coverImage: "/images/virtuals/v-champions-cup.png",
+                href: "/virtual-games",
+                multi: "KNOCKOUT",
+              },
+              {
+                id: "v-penalty-shootout",
+                name: "Penalty Shootout 1v1",
+                desc: "Pick target corners & score against AI goalkeeper",
+                category: "Instant",
+                badge: "HOT",
+                badgeColor: "bg-[#00E676] text-black",
+                coverImage: "/images/virtuals/v-penalty-shootout.png",
+                href: "/virtual-games",
+                multi: "50x WIN",
+              },
+              {
+                id: "v-rocket-crash",
+                name: "Rocket Crash",
+                desc: "Watch multiplier rise & cash out before detonation!",
+                category: "Crash",
+                badge: "1000x MULTI",
+                badgeColor: "bg-rose-500 text-white",
+                coverImage: "/images/virtuals/v-rocket-crash.png",
+                href: "/virtual-games",
+                multi: "HIGH MULTI",
+              },
+              {
+                id: "v-horse-racing",
+                name: "Virtual Horse Racing",
+                desc: "Photorealistic 3D track sprint & win/place betting",
+                category: "Racing",
+                badge: "3D TRACK",
+                badgeColor: "bg-purple-500 text-white",
+                coverImage: "/images/virtuals/v-horse-racing.png",
+                href: "/virtual-games",
+                multi: "24/7 STREAM",
+              },
+              {
+                id: "v-spin-wheel",
+                name: "Fortune Spin Wheel",
+                desc: "Spin instant lucky wheel for up to 500x multipliers",
+                category: "Instant",
+                badge: "INSTANT WIN",
+                badgeColor: "bg-amber-400 text-black",
+                coverImage: "/images/virtuals/v-spin-wheel.png",
+                href: "/virtual-games",
+                multi: "500x BONUS",
+              },
             ].map((vGame) => (
               <Link
-                key={vGame.name}
-                href="/virtual-games"
-                className="group rounded-2xl bg-[#181C24] border border-white/8 p-4 hover:border-cyan-400/40 transition shadow-lg flex flex-col justify-between"
+                key={vGame.id}
+                href={vGame.href}
+                className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#181C24] border border-white/10 hover:border-cyan-400/50 transition-all duration-300 shadow-xl hover:shadow-cyan-500/10"
               >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl">{vGame.icon}</span>
-                    <span className="rounded bg-white/5 px-2 py-0.5 text-[9px] font-black text-cyan-400">
+                {/* Cover Image Container */}
+                <div className="relative h-40 w-full overflow-hidden bg-black/40">
+                  <img
+                    src={vGame.coverImage}
+                    alt={vGame.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#181C24] via-transparent to-black/30" />
+
+                  {/* Top Badges */}
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+                    <span className="rounded-lg bg-black/60 backdrop-blur-md border border-white/10 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">
+                      {vGame.category}
+                    </span>
+                    <span className={`rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider shadow-md ${vGame.badgeColor}`}>
                       {vGame.badge}
                     </span>
                   </div>
-                  <h4 className="mt-3 text-sm font-black text-white group-hover:text-cyan-400 transition">
-                    {vGame.name}
-                  </h4>
-                  <p className="mt-1 text-xs text-text-muted">{vGame.desc}</p>
+
+                  {/* Play Overlay */}
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="flex items-center gap-1.5 bg-cyan-400 text-black font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-cyan-400/30 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                      <Play className="h-3.5 w-3.5 fill-current" /> Play Virtual
+                    </span>
+                  </div>
                 </div>
-                <div className="mt-4 flex items-center justify-end text-xs font-black text-cyan-400">
-                  Play Demo →
+
+                {/* Card Body */}
+                <div className="p-4 flex flex-col justify-between flex-1">
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="text-sm font-black text-white group-hover:text-cyan-400 transition-colors">
+                        {vGame.name}
+                      </h4>
+                      <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20 shrink-0">
+                        {vGame.multi}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-text-muted line-clamp-2 leading-relaxed">
+                      {vGame.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between text-xs font-black text-cyan-400">
+                    <span className="text-[10px] text-text-muted font-normal">24/7 Instant Rounds</span>
+                    <span className="flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+                      Play Now <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -345,37 +515,151 @@ export default function HomePage() {
         {/* 6. Casino & Slots Preview */}
         <section className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
-              <Dice5 className="h-4 w-4 text-purple-400" />
-              Casino & Slots Spotlight
-            </h3>
-            <Link href="/games" className="text-xs font-bold text-purple-400 hover:underline flex items-center gap-0.5">
-              View All Games <ChevronRight className="h-3 w-3" />
+            <div>
+              <span className="rounded bg-purple-500/20 text-purple-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border border-purple-500/30">
+                SLOTS & LIVE DEALERS
+              </span>
+              <h3 className="text-lg font-black text-white mt-1 flex items-center gap-2">
+                <Dice5 className="h-5 w-5 text-purple-400" />
+                Casino & Slots Spotlight
+              </h3>
+            </div>
+            <Link href="/games" className="rounded-xl bg-purple-500/20 text-purple-400 px-4 py-2 text-xs font-black hover:bg-purple-500/30 transition flex items-center gap-1 border border-purple-500/30">
+              View All Games <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: "Aviator Crash Game", subtitle: "Fly high & cash out before crash", icon: Flame, href: "/games/aviator", color: "from-amber-500/20 to-red-600/10 text-gold" },
-              { title: "Fast Keno & Lucky Numbers", subtitle: "Instant draw numbers up to 10,000x", icon: Dice5, href: "/games/keno", color: "from-purple-500/20 to-pink-600/10 text-purple-400" },
-              { title: "Sweet Bonanza & Slots", subtitle: "Tumbling reels with scatter multipliers", icon: Sparkles, href: "/games", color: "from-emerald-500/20 to-teal-600/10 text-[#00E676]" },
+              {
+                title: "Aviator Crash Game",
+                subtitle: "Fly high & cash out before plane explodes!",
+                icon: Flame,
+                href: "/games/aviator",
+                coverImage: "/images/aviator.png",
+                badge: "HOT 100x",
+                badgeColor: "bg-[#00E676] text-black font-black",
+                provider: "Spribe",
+                category: "CRASH",
+                multi: "100x MULTI",
+              },
+              {
+                title: "Gates of Olympus",
+                subtitle: "Zeus lightning multiplier drops up to 5,000x",
+                icon: Sparkles,
+                href: "/games/gates-of-olympus",
+                coverImage: "/images/gates_of_olympus.png",
+                badge: "5000x MAX",
+                badgeColor: "bg-gold text-black font-black",
+                provider: "Pragmatic Play",
+                category: "SLOTS",
+                multi: "5,000x MAX",
+              },
+              {
+                title: "Sweet Bonanza",
+                subtitle: "Tumbling candy reels with 100x bomb multipliers",
+                icon: Sparkles,
+                href: "/games/sweet-bonanza",
+                coverImage: "/images/sweet_bonanza.png",
+                badge: "POPULAR",
+                badgeColor: "bg-pink-500 text-white font-black",
+                provider: "Pragmatic Play",
+                category: "SLOTS",
+                multi: "TUMBLE WINS",
+              },
+              {
+                title: "Fast Keno & Lucky Numbers",
+                subtitle: "Instant number draws with payouts up to 10,000x",
+                icon: Dice5,
+                href: "/games/keno",
+                coverImage: "/images/fast_keno.png",
+                badge: "10,000x WIN",
+                badgeColor: "bg-purple-500 text-white font-black",
+                provider: "Tipplay Originals",
+                category: "NUMBERS",
+                multi: "10,000x TOP",
+              },
+              {
+                title: "Live VIP Roulette",
+                subtitle: "Real-time HD dealers, European & Lightning rules",
+                icon: Dice5,
+                href: "/games",
+                coverImage: "/images/live_roulette.png",
+                badge: "LIVE DEALER",
+                badgeColor: "bg-red-500 text-white font-black",
+                provider: "Evolution Live",
+                category: "LIVE CASINO",
+                multi: "HD STREAM",
+              },
+              {
+                title: "Sugar Rush & Vegas Slots",
+                subtitle: "Sticky multiplier spots on 7x7 tumbling slot grid",
+                icon: Sparkles,
+                href: "/games/sugar-rush",
+                coverImage: "/images/sugar_rush.svg",
+                badge: "DEMO AVAILABLE",
+                badgeColor: "bg-cyan-400 text-black font-black",
+                provider: "Pragmatic Play",
+                category: "SLOTS",
+                multi: "128x MULTI",
+              },
             ].map((casino) => {
               const Icon = casino.icon;
               return (
                 <Link
                   key={casino.title}
                   href={casino.href}
-                  className={`group rounded-2xl bg-gradient-to-r ${casino.color} bg-[#181C24] p-5 border border-white/8 hover:border-white/20 transition shadow-xl`}
+                  className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#181C24] border border-white/10 hover:border-purple-400/50 transition-all duration-300 shadow-xl hover:shadow-purple-500/10"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:scale-110 transition">
-                    <Icon className="h-6 w-6" />
+                  {/* Cover Image Container */}
+                  <div className="relative h-44 w-full overflow-hidden bg-black/40">
+                    <img
+                      src={casino.coverImage}
+                      alt={casino.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#181C24] via-transparent to-black/40" />
+
+                    {/* Top Badges */}
+                    <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+                      <span className="rounded-lg bg-black/60 backdrop-blur-md border border-white/10 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">
+                        {casino.category}
+                      </span>
+                      <span className={`rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider shadow-md ${casino.badgeColor}`}>
+                        {casino.badge}
+                      </span>
+                    </div>
+
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="flex items-center gap-1.5 bg-[#00E676] text-black font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/30 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <Play className="h-3.5 w-3.5 fill-current" /> Play Now
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="mt-4 text-base font-black text-white group-hover:text-electric transition">
-                    {casino.title}
-                  </h4>
-                  <p className="mt-1 text-xs font-semibold text-text-muted">{casino.subtitle}</p>
-                  <div className="mt-4 flex items-center justify-end text-xs font-black text-electric">
-                    Play Now →
+
+                  {/* Card Content */}
+                  <div className="p-4 flex flex-col justify-between flex-1">
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-sm font-black text-white group-hover:text-purple-300 transition-colors flex items-center gap-1.5">
+                          {casino.title}
+                        </h4>
+                        <span className="text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20 shrink-0">
+                          {casino.multi}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-text-muted line-clamp-2 leading-relaxed">
+                        {casino.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between text-xs font-black text-purple-400">
+                      <span className="text-[10px] text-text-muted font-normal">{casino.provider}</span>
+                      <span className="flex items-center gap-0.5 group-hover:translate-x-1 transition-transform text-electric">
+                        Enter Game <ChevronRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
                   </div>
                 </Link>
               );

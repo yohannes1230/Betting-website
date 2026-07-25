@@ -1,0 +1,18 @@
+run = "npm run dev"
+entrypoint = "app/page.tsx"
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+DEMO_MODE = "true"
+NEXTAUTH_SECRET = "f69ad98b671a546c1a851174ef817c13db43354452179b3846cd4f6a70e7e192"
+ODDS_API_KEY = "b31776e71229488d51f1803493ef899f"
+
+[deployment]
+run = ["sh", "-c", "npm run build && npm run start"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getLiveAndUpcomingMatches } from "@/lib/the-odds-api";
 import { prisma } from "@/lib/prisma";
-import { formatOddsDataToMatch, getAllSports, getSportKeysForRequest, getSportScheduleAndOdds } from "@/lib/the-odds-api";
 
 export async function GET(
   req: NextRequest,
@@ -9,19 +9,14 @@ export async function GET(
   const { matchId } = await params;
 
   try {
-    const sports = await getAllSports();
-    const sportKeys = getSportKeysForRequest("all", sports);
+    const matches = await getLiveAndUpcomingMatches();
+    const match = matches.find((m) => m.id === matchId);
 
-    for (const sportKey of sportKeys) {
-      const { odds } = await getSportScheduleAndOdds(sportKey, undefined, 10);
-      const matchData = odds.find((item) => item.id === matchId);
-
-      if (matchData) {
-        return NextResponse.json(formatOddsDataToMatch(matchData).odds);
-      }
+    if (match) {
+      return NextResponse.json(match.odds);
     }
   } catch (error) {
-    console.error("Odds API fallback triggered:", error);
+    console.error("Odds API error:", error);
   }
 
   try {

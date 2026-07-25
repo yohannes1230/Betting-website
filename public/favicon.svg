@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="tipplay-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E676" />
+      <stop offset="50%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="tipplay-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#00E676" />
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background Circle -->
+  <rect width="40" height="40" rx="10" fill="#0B0E11"/>
+
+  <!-- Rounded Hex Shield Base -->
+  <path
+    d="M20 5L33 11.5V25.5L20 33L7 25.5V11.5L20 5Z"
+    fill="#121620"
+    stroke="url(#tipplay-grad)"
+    stroke-width="2.2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Stylized Dynamic Tip Chevron + Play Arrow -->
+  <path
+    d="M15 14L23.5 20L15 26V14Z"
+    fill="url(#tipplay-grad)"
+  />
+  <path
+    d="M21.5 14.5L27 20L21.5 25.5"
+    stroke="url(#tipplay-accent)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

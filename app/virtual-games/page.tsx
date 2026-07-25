@@ -36,7 +36,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Racing",
     icon: "🐕",
     description: "Rapid 6-dog track sprint every 60 seconds with live photo-finish camera angles.",
-    coverImage: "/images/virtuals/v-horse-racing.png",
+    coverImage: "/images/virtuals/v-greyhound-racing.png",
   },
   {
     id: "v-basketball",
@@ -44,7 +44,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Sports",
     icon: "🏀",
     description: "High-scoring 4-quarter basketball matchup simulation with point spreads and total over/under lines.",
-    coverImage: "/images/virtual_football.png",
+    coverImage: "/images/virtuals/v-basketball.png",
   },
   {
     id: "v-tennis-open",
@@ -52,7 +52,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Sports",
     icon: "🎾",
     description: "Head-to-head tennis match game with set betting, game handicap, and tie-break simulation.",
-    coverImage: "/images/virtual_football.png",
+    coverImage: "/images/virtuals/v-tennis-open.png",
   },
   {
     id: "v-motor-racing",
@@ -60,7 +60,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Racing",
     icon: "🏎️",
     description: "High-octane motor speedway racing featuring lap telemetry and podium betting markets.",
-    coverImage: "/images/virtuals/v-horse-racing.png",
+    coverImage: "/images/virtuals/v-motor-racing.png",
   },
   {
     id: "v-cycling",
@@ -68,7 +68,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Racing",
     icon: "🚴",
     description: "Indoor velodrome track sprint simulation with sprint finish photo verification.",
-    coverImage: "/images/virtuals/v-horse-racing.png",
+    coverImage: "/images/virtuals/v-cycling.png",
   },
   {
     id: "v-keno",
@@ -100,7 +100,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Instant",
     icon: "💣",
     description: "Uncover safe tiles on a 5x5 grid while avoiding hidden mines. Cash out after every step!",
-    coverImage: "/images/virtuals/v-rocket-crash.png",
+    coverImage: "/images/virtuals/v-mines.png",
   },
   {
     id: "v-dice",
@@ -108,7 +108,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Instant",
     icon: "🎲",
     description: "Set your risk ratio and roll under or over target thresholds with instant settlement.",
-    coverImage: "/images/fast_keno.png",
+    coverImage: "/images/virtuals/v-dice.png",
   },
   {
     id: "v-spin-wheel",
@@ -124,7 +124,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Numbers",
     icon: "🎟️",
     description: "Continuous 3-minute lottery draw with straight, box, and combo prize distributions.",
-    coverImage: "/images/fast_keno.png",
+    coverImage: "/images/virtuals/v-lottery.png",
   },
   {
     id: "v-scratch-cards",
@@ -132,7 +132,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Instant",
     icon: "🏷️",
     description: "Scratch and reveal 3 matching symbols for instant cash payouts up to 5,000x.",
-    coverImage: "/images/slots.png",
+    coverImage: "/images/virtuals/v-scratch-cards.png",
   },
   {
     id: "v-hilo",
@@ -140,7 +140,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Cards",
     icon: "🃏",
     description: "Predict whether the next card will be Higher or Lower than the current card to build streak multipliers.",
-    coverImage: "/images/slots.png",
+    coverImage: "/images/virtuals/v-hilo.png",
   },
   {
     id: "v-coin-flip",
@@ -148,7 +148,7 @@ export const VIRTUAL_GAMES_LIST: VirtualGameInfo[] = [
     category: "Instant",
     icon: "🪙",
     description: "Heads or Tails? Flip the golden coin and double your stake on consecutive wins.",
-    coverImage: "/images/slots.png",
+    coverImage: "/images/virtuals/v-coin-flip.svg",
   },
   {
     id: "v-penalty-shootout",

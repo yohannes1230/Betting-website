@@ -22,6 +22,14 @@ export const metadata: Metadata = {
   description:
     "Ethiopia's premier sportsbook, crash games & virtual casino platform. Live odds, instant tickets, virtual football, Aviator-style crash, Keno & Jackpots. ቲፕፕሌይ — ለኢትዮጵያ የተዘጋጀ መሪ የቤቲንግ መድረክ",
   keywords: "Tipplay, sports betting, Ethiopia sportsbook, live odds, virtual games, Aviator, Keno, casino, ቲፕፕሌይ, ቤቲንግ",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

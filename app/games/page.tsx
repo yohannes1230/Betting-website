@@ -54,7 +54,7 @@ export default function GamesPage() {
       badge: "Demo",
       badgeColor: "bg-gradient-to-r from-pink-500 to-rose-400 text-white",
       playable: true,
-      image: "/images/slots.png",
+      image: "/images/sweet_bonanza.png",
     },
     {
       icon: Trophy,
@@ -65,7 +65,7 @@ export default function GamesPage() {
       badge: "Demo",
       badgeColor: "bg-gradient-to-r from-yellow-500 to-amber-400 text-black",
       playable: true,
-      image: "/images/slots.png",
+      image: "/images/gates_of_olympus.png",
     },
     {
       icon: Dice5,
@@ -76,7 +76,7 @@ export default function GamesPage() {
       badge: "Demo",
       badgeColor: "bg-gradient-to-r from-fuchsia-500 to-purple-400 text-white",
       playable: true,
-      image: "/images/slots.png",
+      image: "/images/sugar_rush.svg",
     },
     {
       icon: Gauge,
@@ -87,6 +87,7 @@ export default function GamesPage() {
       badge: t("games.comingSoon"),
       badgeColor: "bg-white/10 text-text-muted",
       playable: false,
+      image: "/images/live_roulette.png",
     },
     {
       icon: BadgeCheck,

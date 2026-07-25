@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <radialGradient id="bgSugar" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#6A0C5B"/>
+      <stop offset="100%" stop-color="#1C021A"/>
+    </radialGradient>
+    <linearGradient id="candyPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF69B4"/>
+      <stop offset="50%" stop-color="#FF1493"/>
+      <stop offset="100%" stop-color="#C71585"/>
+    </linearGradient>
+    <linearGradient id="candyCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FFFF"/>
+      <stop offset="100%" stop-color="#008B8B"/>
+    </linearGradient>
+    <linearGradient id="candyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FF8C00"/>
+    </linearGradient>
+    <filter id="glowSugar" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bgSugar)"/>
+
+  <!-- Background Orbs -->
+  <circle cx="150" cy="120" r="60" fill="#FF1493" opacity="0.25" filter="url(#glowSugar)"/>
+  <circle cx="680" cy="380" r="90" fill="#00E5FF" opacity="0.2" filter="url(#glowSugar)"/>
+  <circle cx="650" cy="130" r="70" fill="#FFD700" opacity="0.25" filter="url(#glowSugar)"/>
+
+  <!-- Giant Swirl Lollipop -->
+  <g transform="translate(260, 230)">
+    <line x1="0" y1="60" x2="-40" y2="200" stroke="#E0E0E0" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="90" fill="url(#candyPink)" filter="url(#glowSugar)"/>
+    <path d="M0 -75 A75 75 0 0 1 75 0 A55 55 0 0 1 0 55 A35 35 0 0 1 -35 0 A15 15 0 0 1 0 -15" fill="none" stroke="#FFF" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- Jelly Bean Candy -->
+  <g transform="translate(540, 240) scale(1.1)">
+    <rect x="-50" y="-40" width="100" height="140" rx="50" fill="url(#candyCyan)" transform="rotate(-20)" filter="url(#glowSugar)"/>
+    <ellipse cx="-15" cy="-20" rx="12" ry="30" fill="#FFF" opacity="0.6" transform="rotate(-20)"/>
+  </g>
+
+  <!-- Gummy Star -->
+  <path d="M400 90 L418 135 L465 140 L430 172 L440 220 L400 195 L360 220 L370 172 L335 140 L382 135 Z" fill="url(#candyGold)" filter="url(#glowSugar)"/>
+
+  <!-- Sugar Multipliers -->
+  <g transform="translate(640, 100)">
+    <circle cx="0" cy="0" r="36" fill="#FFD700" filter="url(#glowSugar)"/>
+    <text x="0" y="8" font-family="Arial Black" font-size="20" font-weight="900" fill="#000" text-anchor="middle">128x</text>
+  </g>
+  <g transform="translate(140, 360)">
+    <circle cx="0" cy="0" r="30" fill="#FF1493" filter="url(#glowSugar)"/>
+    <text x="0" y="6" font-family="Arial Black" font-size="16" font-weight="900" fill="#FFF" text-anchor="middle">64x</text>
+  </g>
+
+  <!-- Title Text -->
+  <text x="400" y="420" font-family="Arial Black, sans-serif" font-size="42" font-weight="900" fill="#FFF" text-anchor="middle" filter="url(#glowSugar)" letter-spacing="2">SUGAR RUSH</text>
+  <text x="400" y="455" font-family="sans-serif" font-size="16" font-weight="bold" fill="#FF80AB" text-anchor="middle" letter-spacing="3">STICKY MULTIPLIERS 7x7</text>
+
+  <!-- Top Badge -->
+  <rect x="30" y="30" width="160" height="36" rx="10" fill="#FFD700" filter="url(#glowSugar)"/>
+  <text x="110" y="54" font-family="Arial Black, sans-serif" font-size="13" font-weight="900" fill="#000" text-anchor="middle">MAX WIN 5000X</text>
+</svg>
