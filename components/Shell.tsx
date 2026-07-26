@@ -166,7 +166,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-bg-deep text-text-primary pb-16 md:pb-0">
+    <div className="min-h-screen bg-bg-deep text-text-primary pb-20 md:pb-0">
       <SplashIntro />
 
       {/* ───── Top Navigation Header ───── */}
@@ -332,10 +332,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             {session?.user && balance !== null && (
               <Link
                 href="/wallet"
-                className="flex items-center gap-1.5 rounded-xl bg-gold/15 px-3 py-2 text-xs font-black text-gold border border-gold/30 hover:border-gold/60 transition tabular"
+                className="flex items-center gap-1.5 rounded-xl bg-gold/15 px-2 sm:px-3 py-2 text-xs font-black text-gold border border-gold/30 hover:border-gold/60 transition tabular"
               >
                 <Wallet className="h-3.5 w-3.5" />
-                <span>{balance} ETB</span>
+                <span className="hidden sm:inline">{balance} ETB</span>
               </Link>
             )}
 
@@ -343,10 +343,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             {session?.user ? (
               <Link
                 href="/wallet"
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#00E676] to-[#10B981] px-3.5 py-2 text-xs font-black text-black shadow-lg shadow-electric/25 hover:brightness-110 transition transform active:scale-95"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#00E676] to-[#10B981] px-2.5 sm:px-3.5 py-2 text-xs font-black text-black shadow-lg shadow-electric/25 hover:brightness-110 transition transform active:scale-95"
               >
                 <PlusCircle className="h-4 w-4" />
-                <span>Deposit</span>
+                <span className="hidden sm:inline">Deposit</span>
               </Link>
             ) : null}
 
@@ -427,7 +427,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
 
       {/* ───── Sticky Bottom Mobile Nav Bar (Modern African Sportsbook UX) ───── */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-white/10 bg-[#12151C]/95 backdrop-blur-lg px-2 lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-[4.5rem] items-center justify-around border-t border-white/10 bg-[#12151C]/95 backdrop-blur-lg px-2 pb-safe lg:hidden">
         <Link
           href="/"
           className={`flex flex-col items-center gap-1 text-[11px] font-bold ${

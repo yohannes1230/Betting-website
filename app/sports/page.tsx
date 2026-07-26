@@ -246,7 +246,7 @@ function SportsContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
-                    <Card className="flex flex-col lg:flex-row lg:items-center gap-4 p-4 transition-all hover:bg-white/5 border-l-4 border-l-transparent hover:border-l-electric" glow={match.isLive}>
+                    <Card className="flex flex-col gap-3 p-3 sm:p-4 transition-all hover:bg-white/5 border-l-4 border-l-transparent hover:border-l-electric" glow={match.isLive}>
                       {/* Left: Match Info */}
                       <div className="flex-1 min-w-0 flex items-center gap-4">
                         <div className="hidden sm:flex flex-col items-center gap-2 w-10 shrink-0">
@@ -287,10 +287,10 @@ function SportsContent() {
                       </div>
 
                       {/* Right: Odds */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        <div className="grid grid-cols-3 gap-1 md:gap-2 w-full lg:w-auto">
+                      <div className="flex items-center gap-2">
+                        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 flex-1 lg:flex-none">
                           {matchOdds.map((odd) => (
-                            <div key={odd.id} className="w-[70px] md:w-[80px]">
+                            <div key={odd.id} className="min-w-0">
                               <OddsButton odd={odd} match={match} />
                             </div>
                           ))}
@@ -319,8 +319,8 @@ function SportsContent() {
         </aside>
       </div>
 
-      {/* Mobile bet slip */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-bg-card/95 backdrop-blur-lg p-3 shadow-2xl lg:hidden">
+      {/* Mobile bet slip — positioned above the bottom nav bar */}
+      <div className="fixed inset-x-0 bottom-[4.5rem] z-30 border-t border-white/5 bg-bg-card/95 backdrop-blur-lg p-3 shadow-2xl lg:hidden">
         <BetSlipPanel compact />
       </div>
     </>

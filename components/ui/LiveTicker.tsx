@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Activity, Flame, ChevronRight } from "lucide-react";
-import { useBetSlipStore, SlipItem } from "@/lib/store";
+import { useBetSlipStore } from "@/lib/store";
 
 export type LiveTickerMatch = {
   id: string;
@@ -23,7 +23,7 @@ interface LiveTickerProps {
 }
 
 export function LiveTicker({ matches, loading }: LiveTickerProps) {
-  const { slip, addSelection } = useBetSlipStore();
+  const { slip, addSelection, removeSelection } = useBetSlipStore();
 
   if (loading) {
     return (
@@ -90,7 +90,8 @@ export function LiveTicker({ matches, loading }: LiveTickerProps) {
 
                   const handleSelect = (e: React.MouseEvent) => {
                     e.preventDefault();
-                    const item: SlipItem = {
+                    // Toggle: addSelection now handles deselect internally
+                    addSelection({
                       oddsId: o.id,
                       matchId: m.id,
                       marketName: o.marketName,
@@ -99,8 +100,7 @@ export function LiveTicker({ matches, loading }: LiveTickerProps) {
                       homeTeam: m.homeTeam,
                       awayTeam: m.awayTeam,
                       league: m.league,
-                    };
-                    addSelection(item);
+                    });
                   };
 
                   return (

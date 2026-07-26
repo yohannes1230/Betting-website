@@ -25,8 +25,15 @@ export const useBetSlipStore = create<BetSlipStore>((set) => ({
   slip: [],
   addSelection: (item) =>
     set((state) => {
-      // Remove same odds ID if already present (toggle behavior)
-      const filtered = state.slip.filter((s) => s.oddsId !== item.oddsId);
+      // True toggle: if the exact same oddsId is already selected, remove it (deselect)
+      const alreadySelected = state.slip.some((s) => s.oddsId === item.oddsId);
+      if (alreadySelected) {
+        return { slip: state.slip.filter((s) => s.oddsId !== item.oddsId) };
+      }
+      // Replace any existing selection on the same match + same market (e.g. swap Home→Away)
+      const filtered = state.slip.filter(
+        (s) => !(s.matchId === item.matchId && s.marketName === item.marketName),
+      );
       return { slip: [...filtered, item] };
     }),
   removeSelection: (oddsId) =>

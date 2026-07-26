@@ -28,7 +28,7 @@ import {
   TeamLogo,
 } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
-import { useBetSlipStore, SlipItem } from "@/lib/store";
+import { useBetSlipStore } from "@/lib/store";
 
 type MatchData = {
   id: string;
@@ -84,7 +84,7 @@ const LEAGUE_ICONS: Record<string, string> = {
 
 export default function HomePage() {
   const { t } = useI18n();
-  const { slip, addSelection } = useBetSlipStore();
+  const { slip, addSelection, removeSelection } = useBetSlipStore();
   const [matches, setMatches] = useState<MatchData[]>([]);
   const [selectedLeague, setSelectedLeague] = useState<string>("All");
   const [loading, setLoading] = useState(true);
@@ -181,8 +181,45 @@ export default function HomePage() {
 
         {/* 4. Main Sportsbook Grid with Sidebar Filters */}
         <section className="grid gap-6 lg:grid-cols-[240px_1fr] items-start">
-          {/* Left Category Sidebar — sticky, scrollable, stretches to viewport */}
-          <aside className="lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)]">
+          {/* Mobile League Filter Chips — horizontal scroll, hidden on desktop */}
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2 lg:hidden">
+            <button
+              onClick={() => setSelectedLeague("All")}
+              className={`shrink-0 flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-black transition ${
+                selectedLeague === "All"
+                  ? "bg-[#00E676] text-black shadow-md shadow-emerald-500/20"
+                  : "bg-[#181C24] text-text-secondary border border-white/8 hover:bg-white/10"
+              }`}
+            >
+              🔥 All ({matches.length})
+            </button>
+            <button
+              onClick={() => setSelectedLeague("Ethiopian Premier League")}
+              className={`shrink-0 flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-black transition ${
+                selectedLeague === "Ethiopian Premier League"
+                  ? "bg-[#00E676] text-black shadow-md shadow-emerald-500/20"
+                  : "bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20"
+              }`}
+            >
+              🇪🇹 Ethiopia
+            </button>
+            {leaguesList.slice(0, 12).map((league) => (
+              <button
+                key={league}
+                onClick={() => setSelectedLeague(league)}
+                className={`shrink-0 flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold whitespace-nowrap transition ${
+                  selectedLeague === league
+                    ? "bg-[#00E676] text-black shadow-md shadow-emerald-500/20"
+                    : "bg-[#181C24] text-text-secondary border border-white/8 hover:bg-white/10"
+                }`}
+              >
+                {LEAGUE_ICONS[league] || "⚽"} {league}
+              </button>
+            ))}
+          </div>
+
+          {/* Left Category Sidebar — desktop only, sticky, scrollable */}
+          <aside className="hidden lg:block lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)]">
             <div className="rounded-2xl bg-[#181C24] border border-white/8 p-3 shadow-lg flex flex-col lg:max-h-[calc(100vh-6rem)]">
               {/* Header — fixed at top */}
               <div className="flex items-center justify-between px-2 py-1.5 mb-2 border-b border-white/5 pb-2 shrink-0">
@@ -195,7 +232,7 @@ export default function HomePage() {
               </div>
 
               {/* Scrollable leagues list — visible thin scrollbar */}
-              <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto flex-1 min-h-0 pr-1 thin-scrollbar">
+              <div className="flex flex-col gap-1 overflow-y-auto flex-1 min-h-0 pr-1 thin-scrollbar">
                 <button
                   onClick={() => setSelectedLeague("All")}
                   className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition shrink-0 w-full ${
@@ -230,7 +267,7 @@ export default function HomePage() {
                 </button>
 
                 {/* Separator */}
-                <div className="hidden lg:block border-t border-white/5 my-1 shrink-0" />
+                <div className="border-t border-white/5 my-1 shrink-0" />
 
                 {leaguesList.map((league) => {
                   const matchCount = leagueMatchCounts.get(league) || 0;
@@ -283,40 +320,42 @@ export default function HomePage() {
                 {featuredMatches.slice(0, 15).map((m) => (
                   <div
                     key={m.id}
-                    className="group rounded-2xl bg-[#181C24] border border-white/8 p-4 shadow-lg hover:border-electric/30 transition"
+                    className="group rounded-2xl bg-[#181C24] border border-white/8 p-3 sm:p-4 shadow-lg hover:border-electric/30 transition"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col items-center gap-1.5 shrink-0">
-                          <TeamLogo name={m.homeTeam} size="sm" />
-                          <TeamLogo name={m.awayTeam} size="sm" />
+                    {/* League & time header */}
+                    <div className="flex items-center gap-1 text-xs font-bold text-electric mb-2">
+                      <span>{LEAGUE_ICONS[m.league] || "⚽"}</span>
+                      <span className="truncate">{m.league}</span>
+                      {m.isLive ? (
+                        <span className="ml-auto flex items-center gap-1 text-[10px] font-black text-live bg-live/10 px-1.5 py-0.5 rounded shrink-0">
+                          <Activity className="h-3 w-3 animate-pulse" /> {m.minute}'
+                        </span>
+                      ) : (
+                        <span className="ml-auto text-[10px] text-text-muted shrink-0">
+                          {new Date(m.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {/* Team logos — hidden on very small screens */}
+                      <div className="hidden sm:flex flex-col items-center gap-1.5 shrink-0">
+                        <TeamLogo name={m.homeTeam} size="sm" />
+                        <TeamLogo name={m.awayTeam} size="sm" />
+                      </div>
+
+                      {/* Teams */}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-black text-white group-hover:text-electric transition truncate">
+                          {m.homeTeam}
                         </div>
-
-                        <div>
-                          <div className="text-xs font-bold text-electric flex items-center gap-1">
-                            <span>{LEAGUE_ICONS[m.league] || "⚽"}</span>
-                            <span>{m.league}</span>
-                            {m.isLive ? (
-                              <span className="ml-2 flex items-center gap-1 text-[10px] font-black text-live bg-live/10 px-1.5 py-0.5 rounded">
-                                <Activity className="h-3 w-3 animate-pulse" /> {m.minute}'
-                              </span>
-                            ) : (
-                              <span className="ml-2 text-[10px] text-text-muted">
-                                {new Date(m.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="mt-1 text-sm font-black text-white group-hover:text-electric transition flex items-center gap-3">
-                            <span>{m.homeTeam}</span>
-                            <span className="text-text-muted">vs</span>
-                            <span>{m.awayTeam}</span>
-                          </div>
+                        <div className="text-sm font-black text-white group-hover:text-electric transition truncate mt-0.5">
+                          {m.awayTeam}
                         </div>
                       </div>
 
-                      {/* Quick Odds Buttons Grid */}
-                      <div className="flex items-center gap-2 sm:w-auto w-full">
+                      {/* Quick Odds Buttons Grid — always 3-col, responsive sizing */}
+                      <div className="grid grid-cols-3 gap-1.5 shrink-0">
                         {m.odds
                           .filter((o) => o.marketName === "Match Result")
                           .slice(0, 3)
@@ -324,7 +363,7 @@ export default function HomePage() {
                             const isSelected = slip.some((s) => s.oddsId === o.id);
 
                             const handleSelect = () => {
-                              const item: SlipItem = {
+                              addSelection({
                                 oddsId: o.id,
                                 matchId: m.id,
                                 marketName: o.marketName,
@@ -333,22 +372,21 @@ export default function HomePage() {
                                 homeTeam: m.homeTeam,
                                 awayTeam: m.awayTeam,
                                 league: m.league,
-                              };
-                              addSelection(item);
+                              });
                             };
 
                             return (
                               <button
                                 key={o.id}
                                 onClick={handleSelect}
-                                className={`flex-1 sm:w-20 rounded-xl px-3 py-2 flex flex-col items-center justify-center text-xs font-black transition ${
+                                className={`w-16 sm:w-20 rounded-xl px-2 py-2 flex flex-col items-center justify-center text-xs font-black transition active:scale-95 ${
                                   isSelected
-                                    ? "bg-[#00E676] text-black shadow-lg shadow-electric/30 font-black scale-105"
+                                    ? "bg-[#00E676] text-black shadow-lg shadow-electric/30 scale-[1.02]"
                                     : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-white"
                                 }`}
                               >
-                                <span className="text-[10px] text-text-muted uppercase">{o.selection}</span>
-                                <span className="font-mono text-electric group-hover:text-white tabular">
+                                <span className={`text-[10px] uppercase ${isSelected ? 'text-black/60' : 'text-text-muted'}`}>{o.selection}</span>
+                                <span className={`font-mono tabular ${isSelected ? 'text-black' : 'text-electric'}`}>
                                   {Number(o.value).toFixed(2)}
                                 </span>
                               </button>

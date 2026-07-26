@@ -297,3 +297,34 @@
 .animate-dice-roll { animation: dice-roll 3s ease-in-out infinite; }
 .animate-fade-in { animation: fade-in 0.5s ease-out; }
 .animate-border-glow { animation: border-glow 2s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════ */
+/*          MOBILE RESPONSIVENESS              */
+/* ═══════════════════════════════════════════ */
+
+/* Safe area padding for bottom nav on notched phones (iPhone X+) */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Ensure all interactive elements meet minimum touch target size */
+@media (pointer: coarse) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve text rendering on mobile */
+@media (max-width: 640px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
