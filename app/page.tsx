@@ -379,14 +379,14 @@ export default function HomePage() {
                               <button
                                 key={o.id}
                                 onClick={handleSelect}
-                                className={`w-16 sm:w-20 rounded-xl px-2 py-2 flex flex-col items-center justify-center text-xs font-black transition active:scale-95 ${
+                                className={`w-14 sm:w-20 rounded-xl px-1 py-1.5 sm:px-2 sm:py-2 flex flex-col items-center justify-center text-xs font-black transition active:scale-95 ${
                                   isSelected
-                                    ? "bg-[#00E676] text-black shadow-lg shadow-electric/30 scale-[1.02]"
+                                    ? "bg-[#00E676] text-black shadow-lg shadow-emerald-500/30 scale-[1.02]"
                                     : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-white"
                                 }`}
                               >
-                                <span className={`text-[10px] uppercase ${isSelected ? 'text-black/60' : 'text-text-muted'}`}>{o.selection}</span>
-                                <span className={`font-mono tabular ${isSelected ? 'text-black' : 'text-electric'}`}>
+                                <span className={`text-[9px] sm:text-[10px] uppercase ${isSelected ? 'text-black/70' : 'text-text-muted'}`}>{o.selection}</span>
+                                <span className={`font-mono tabular text-xs sm:text-xs ${isSelected ? 'text-black' : 'text-[#00E676]'}`}>
                                   {Number(o.value).toFixed(2)}
                                 </span>
                               </button>

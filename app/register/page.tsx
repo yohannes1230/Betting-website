@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, Zap } from "lucide-react";
+import { Lock, Zap, Eye, EyeOff } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { Button, Card } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
@@ -14,8 +14,17 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     fullName: "", phone: "", password: "", confirmPassword: "", dob: "1995-01-01", acceptTerms: true,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handlePhoneChange = (val: string) => {
+    let digits = val.replace(/\D/g, "");
+    if (digits.startsWith("251")) digits = digits.slice(3);
+    else if (digits.startsWith("0")) digits = digits.slice(1);
+    setForm({ ...form, phone: digits.slice(0, 9) });
+  };
 
   const handleSubmit = async () => {
     setError("");
@@ -28,11 +37,19 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(typeof data.error === "string" ? data.error : "Registration failed");
+        if (typeof data.error === "string") {
+          setError(data.error);
+        } else if (typeof data.error === "object") {
+          const firstError = Object.values(data.error)[0] as string[];
+          setError(firstError?.[0] || "Registration failed");
+        } else {
+          setError("Registration failed");
+        }
         return;
       }
-      // Store phone for OTP page
+      // Store phone + password for OTP auto-login
       sessionStorage.setItem("pendingPhone", `+251${form.phone}`);
+      sessionStorage.setItem("pendingPassword", form.password);
       router.push("/verify-otp");
     } catch {
       setError("Network error");
@@ -64,27 +81,45 @@ export default function RegisterPage() {
               <span className="px-4 py-3 font-black text-text-muted">+251</span>
               <input
                 value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "").slice(0, 9) })}
-                className="w-full rounded-r-xl bg-transparent px-3 py-3 text-text-primary outline-none placeholder:text-text-dim"
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                className="w-full rounded-r-xl bg-transparent px-3 py-3 text-text-primary outline-none placeholder:text-text-dim tabular-nums"
                 placeholder="900000000"
               />
             </div>
 
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className={inputClass}
-              placeholder={t("auth.password")}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className={inputClass}
+                placeholder={t("auth.password")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
 
-            <input
-              type="password"
-              value={form.confirmPassword}
-              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-              className={inputClass}
-              placeholder={t("auth.confirmPassword")}
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={form.confirmPassword}
+                onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                className={inputClass}
+                placeholder={t("auth.confirmPassword")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition"
+              >
+                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
 
             <input
               type="date"

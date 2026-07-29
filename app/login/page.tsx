@@ -13,7 +13,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { t } = useI18n();
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("DemoPass123!");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,7 +21,7 @@ export default function LoginPage() {
   const handlePhoneChange = (val: string) => {
     let digits = val.replace(/\D/g, "");
     if (digits.startsWith("251")) digits = digits.slice(3);
-    else if (digits.startsWith("09")) digits = "9" + digits.slice(2);
+    else if (digits.startsWith("0")) digits = digits.slice(1);
     setPhone(digits.slice(0, 9));
   };
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
             </div>
 
             <div className="rounded-xl bg-electric/10 border border-electric/20 p-3 text-sm font-bold text-electric">
-              💡 Demo login: any seeded user phone (e.g. +251900000000) with password &quot;DemoPass123!&quot;
+              💡 Demo login: Phone <span className="font-black">900000000</span> — Password <span className="font-black">DemoPass123!</span>
             </div>
 
             {error && (

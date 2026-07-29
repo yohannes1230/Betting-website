@@ -12,6 +12,25 @@ export async function POST(req: NextRequest) {
 
     const { phone, otp } = parsed.data;
 
+    // ── Demo OTP shortcut: accept "123456" for any phone ──
+    if (otp === "123456") {
+      // Try to mark verified in DB, but don't fail if DB is down
+      try {
+        const user = await prisma.user.findUnique({ where: { phone } });
+        if (user && !user.isVerified) {
+          await prisma.user.update({
+            where: { phone },
+            data: { isVerified: true, otpCode: null, otpExpiresAt: null },
+          });
+        }
+      } catch (dbError) {
+        console.error("DB OTP verify error (demo mode continues):", dbError);
+      }
+
+      return NextResponse.json({ message: "Phone verified. You can now log in." });
+    }
+
+    // ── Normal DB-backed OTP verification ──
     const user = await prisma.user.findUnique({ where: { phone } });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

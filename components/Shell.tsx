@@ -318,14 +318,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
               </AnimatePresence>
             </div>
 
-            {/* Language Switcher */}
+            {/* Language Switcher (Desktop / Tablet) */}
             <button
-              className="flex items-center gap-1 rounded-xl bg-white/5 px-2.5 py-2 text-xs font-bold text-text-secondary hover:bg-white/10 hover:text-white transition"
+              className="hidden sm:flex items-center gap-1 rounded-xl bg-white/5 px-2.5 py-2 text-xs font-bold text-text-secondary hover:bg-white/10 hover:text-white transition"
               onClick={() => setLocale(locale === "en" ? "am" : "en")}
               aria-label="Switch language"
             >
               <span className="text-sm">{locale === "en" ? "🇪🇹" : "🇬🇧"}</span>
-              <span className="hidden sm:inline">{locale === "en" ? "አማ" : "EN"}</span>
+              <span>{locale === "en" ? "አማ" : "EN"}</span>
             </button>
 
             {/* User Balance Display */}
@@ -414,8 +414,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
                     );
                   })}
                 </div>
-                <div className="pt-2 border-t border-white/5">
+                <div className="pt-2 border-t border-white/5 flex items-center justify-between">
                   <DemoBadge />
+                  <button
+                    className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold text-white border border-white/10"
+                    onClick={() => setLocale(locale === "en" ? "am" : "en")}
+                  >
+                    <span>{locale === "en" ? "🇪🇹 አማርኛ" : "🇬🇧 English"}</span>
+                  </button>
                 </div>
               </div>
             </motion.div>

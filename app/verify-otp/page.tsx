@@ -21,6 +21,7 @@ export default function VerifyOtpPage() {
     setLoading(true);
     try {
       const phone = sessionStorage.getItem("pendingPhone") || "";
+      const storedPassword = sessionStorage.getItem("pendingPassword") || "DemoPass123!";
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -34,9 +35,11 @@ export default function VerifyOtpPage() {
       // Auto-login after verification
       await signIn("credentials", {
         phone,
-        password: "DemoPass123!", // Default demo password
+        password: storedPassword,
         redirect: false,
       });
+      sessionStorage.removeItem("pendingPhone");
+      sessionStorage.removeItem("pendingPassword");
       router.push("/sports");
       router.refresh();
     } catch {

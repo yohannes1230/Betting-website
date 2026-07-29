@@ -3,6 +3,17 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+// ─── Hardcoded Demo User (works without DB) ─────────────
+const DEMO_USER = {
+  phone: "+251900000000",
+  password: "DemoPass123!",
+  id: "demo-user-001",
+  fullName: "Abebe Kebede",
+  membershipLevel: "GOLD",
+  selfExcluded: false,
+  balance: "5000.00",
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -14,25 +25,46 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.phone || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { phone: credentials.phone },
-          include: { wallet: true },
-        });
+        // ── Demo user shortcut (always works, no DB needed) ──
+        if (
+          credentials.phone === DEMO_USER.phone &&
+          credentials.password === DEMO_USER.password
+        ) {
+          return {
+            id: DEMO_USER.id,
+            name: DEMO_USER.fullName,
+            phone: DEMO_USER.phone,
+            membershipLevel: DEMO_USER.membershipLevel,
+            selfExcluded: DEMO_USER.selfExcluded,
+            balance: DEMO_USER.balance,
+          };
+        }
 
-        if (!user) return null;
-        if (!user.isVerified) return null;
+        // ── Normal DB-backed auth ──
+        try {
+          const user = await prisma.user.findUnique({
+            where: { phone: credentials.phone },
+            include: { wallet: true },
+          });
 
-        const valid = await compare(credentials.password, user.passwordHash);
-        if (!valid) return null;
+          if (!user) return null;
+          if (!user.isVerified) return null;
 
-        return {
-          id: user.id,
-          name: user.fullName,
-          phone: user.phone,
-          membershipLevel: user.membershipLevel,
-          selfExcluded: user.selfExcluded,
-          balance: user.wallet?.balance?.toString() ?? "0",
-        };
+          const valid = await compare(credentials.password, user.passwordHash);
+          if (!valid) return null;
+
+          return {
+            id: user.id,
+            name: user.fullName,
+            phone: user.phone,
+            membershipLevel: user.membershipLevel,
+            selfExcluded: user.selfExcluded,
+            balance: user.wallet?.balance?.toString() ?? "0",
+          };
+        } catch (error) {
+          console.error("DB auth error (falling back):", error);
+          return null;
+        }
       },
     }),
   ],
@@ -65,3 +97,4 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
+

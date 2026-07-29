@@ -130,7 +130,7 @@ export function HeroVideoCarousel({
   const getOverlayPositionClass = (position: HeroVideoSlide["textPosition"]) => {
     switch (position) {
       case "right":
-        return "items-end text-right ml-auto";
+        return "items-start sm:items-end text-left sm:text-right sm:ml-auto";
       case "center":
         return "items-center text-center mx-auto";
       case "left":
@@ -193,7 +193,7 @@ export function HeroVideoCarousel({
       </div>
 
       {/* ───── HTML Text Overlay (Safe Zone Positioning) ───── */}
-      <div className="relative z-10 w-full px-6 py-10 sm:px-12 sm:py-14 max-w-7xl mx-auto">
+      <div className="relative z-10 w-full px-5 py-8 sm:px-12 sm:py-14 max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide.id}
@@ -226,9 +226,9 @@ export function HeroVideoCarousel({
             </p>
 
             {/* CTA Button */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-5 sm:mt-6 flex items-center gap-3">
               <Link href={currentSlide.ctaHref}>
-                <Button variant="gold" className="text-xs sm:text-sm px-6 py-3 font-black shadow-xl shadow-electric/25">
+                <Button variant="gold" className="text-xs sm:text-sm px-5 py-2.5 sm:px-6 sm:py-3 font-black shadow-xl shadow-electric/25">
                   <Zap className="h-4 w-4" />
                   {currentSlide.ctaLabel}
                 </Button>
@@ -242,18 +242,18 @@ export function HeroVideoCarousel({
       {/* Left/Right Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/80 border border-white/10 backdrop-blur-md transition"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/80 border border-white/10 backdrop-blur-md transition"
         aria-label="Previous Video Slide"
       >
-        <ChevronLeft className="h-6 w-6" />
+        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/80 border border-white/10 backdrop-blur-md transition"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/80 border border-white/10 backdrop-blur-md transition"
         aria-label="Next Video Slide"
       >
-        <ChevronRight className="h-6 w-6" />
+        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
       {/* Video Mute / Pause Status & Indicators */}
